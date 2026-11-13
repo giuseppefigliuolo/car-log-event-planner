@@ -1,6 +1,7 @@
 /**
  * Page chrome driven by scroll position (runs with or without motion):
- *  - header: hides while scrolling down (past 180px), frosted once scrolled (always on desktop)
+ *  - header: hides while scrolling down (past 180px), glass once scrolled (always on desktop), tinted with
+ *    the page colour below (--tint)
  *  - header logo (<900px): hidden while the hero shows the name, back once the hero is mostly scrolled
  *    past or the menu opens (data-logo, styles in Header.astro)
  *  - page background: blends to the colour of the [data-bg] section across the 55% line
@@ -44,6 +45,10 @@ export function initChrome() {
     const line = f.y + f.vh * 0.55;
     let c = base;
     for (const s of secs) if (line > s.top && line < s.top + s.h) { c = s.c; break; }
-    if (c !== state.bg) { state.bg = c; document.body.style.backgroundColor = c; }
+    if (c !== state.bg) {
+      state.bg = c;
+      document.body.style.backgroundColor = c;
+      hdr?.style.setProperty('--tint', c); // the header's glass takes the same colour
+    }
   });
 }
