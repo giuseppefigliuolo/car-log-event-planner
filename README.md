@@ -93,6 +93,8 @@ The repo doesn't exist yet: create it (e.g. `carmen-log-site`), push, enable Pag
 Every internal URL must go through `import.meta.env.BASE_URL` / `src/lib/url.ts`, never a hard-coded `/…`.
 
 ## Turning on the CMS (Decap)
+Planned switch to Sveltia CMS, missing validations, open decisions: see [docs/CMS.md](docs/CMS.md).
+
 Local, no account needed:
 ```
 npm run cms     # terminal 1 (local Decap proxy)
