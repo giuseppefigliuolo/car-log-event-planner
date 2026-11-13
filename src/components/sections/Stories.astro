@@ -43,6 +43,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .wrap { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(44px, 6vw, 80px); }
   .head { display: flex; flex-direction: column; gap: 14px; }
   h2 { font-size: clamp(44px, 8vw, 124px); line-height: 0.95; }
+  /* "una storia" wraps as a whole on phones instead of breaking inside. */
+  h2 :global(em) { display: inline-block; }
   .stack { display: flex; flex-direction: column; gap: 8vh; }
   .slot { position: sticky; top: var(--top); height: min(76svh, 820px); }
   .card {

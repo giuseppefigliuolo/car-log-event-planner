@@ -73,7 +73,8 @@ whatsappHref()` (number + prefilled message from settings).
   900px. Here it's one `<section>` with one `h1`, rearranged by CSS at the same breakpoint (no JS, no
   duplicated heading).
 - Background-image `<div>`s became real `<img>` (responsive AVIF/WebP, alt text) for performance and SEO.
-- Contatti columns: each column's photos run twice so tall phones never show an empty band under them.
+- Contatti columns: on phones each column's photos run twice (one pass of 4 is ~650px, the section 108svh);
+  from 900px up one pass fills the section and the repeat is hidden.
 - Mobile hero: a faint top gradient keeps the header logo legible over the white veil.
 - Story stack dims with a black overlay's opacity instead of `filter: brightness()` (compositor-only).
 - Reduced motion: transitions are 0 s (not 0.01 ms: `transition-property` defaults to `all`, which made

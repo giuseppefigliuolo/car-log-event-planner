@@ -20,7 +20,7 @@ const words = m.text.split(/\s+/).map((w) => ({ t: w.replace(/\*/g, ''), it: /^\
 </section>
 
 <style>
-  .manifesto { padding: clamp(130px, 18vw, 250px) var(--gutter); }
+  .manifesto { padding: clamp(88px, 18vw, 250px) var(--gutter) clamp(56px, 18vw, 250px); }
   .wrap { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(32px, 4vw, 56px); }
   .kicker { font-weight: 400; }
   .words { font-size: clamp(32px, 5.4vw, 84px); line-height: 1.12; letter-spacing: -0.02em; text-wrap: pretty; }
