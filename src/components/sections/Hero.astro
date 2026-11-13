@@ -18,6 +18,7 @@ interface Props { home: Home; settings: Settings }
 const { home, settings: s } = Astro.props;
 const h = home.hero;
 const n = h.deck.length;
+const canFlip = h.deck.some((c) => c.back);
 const pad = (x: number) => String(x).padStart(2, '0');
 // Keep in sync with the CSS below and isWide() (900px).
 const NARROW = '(max-width: 899.98px)';
@@ -51,18 +52,35 @@ const WIDE = '(min-width: 900px)';
     {h.deck.map((c, i) => {
       const p = pileStyle(i, i, n);
       return (
-        <figure class="card" data-card style={`z-index:${p.zIndex};opacity:${p.opacity};transform:${p.transform}`}>
-          <div class="media photo">
-            <Img src={c.image.src} alt={c.image.alt} class="cover" sizes="min(300px, 66vw)" widths={[320, 480, 640, 900]} ratio={4 / 5} priority={i < 2} defer={i >= 2} skip={WIDE} />
+        <div class="card" data-card style={`z-index:${p.zIndex};opacity:${p.opacity};transform:${p.transform}`}>
+          <div class="flip" data-flip="0">
+            <figure class="face front" data-face="front">
+              <div class="media photo">
+                <Img src={c.image.src} alt={c.image.alt} class="cover" sizes="min(300px, 66vw)" widths={[320, 480, 640, 900]} ratio={4 / 5} priority={i < 2} defer={i >= 2} skip={WIDE} />
+              </div>
+              <figcaption>{c.title}</figcaption>
+            </figure>
+            {c.back && (
+              <div class="face back" data-face="back" aria-hidden="true">
+                <div class="row">
+                  <span class="mono num">{pad(i + 1)} · {c.title}</span>
+                  <span class="mono-gram" aria-hidden="true">CL</span>
+                </div>
+                <p class="note">{c.back}</p>
+                <span class="sign">— {s.founder}</span>
+              </div>
+            )}
           </div>
-          <figcaption>{c.title}</figcaption>
-        </figure>
+        </div>
       );
     })}
   </div>
   <div class="ctrl" data-deck-ctrl data-hf style="--i:2">
     <span class="count" data-deck-count aria-live="polite">01 / {pad(n)}</span>
-    <button class="next" type="button" data-deck-next aria-label="Sfoglia: foto successiva">Sfoglia <span aria-hidden="true">→</span></button>
+    <span class="acts">
+      {canFlip && <button class="act" type="button" data-deck-flip aria-label="Gira la foto">Gira <span aria-hidden="true">↻</span></button>}
+      <button class="act" type="button" data-deck-next aria-label="Sfoglia: foto successiva">Sfoglia <span aria-hidden="true">→</span></button>
+    </span>
   </div>
   <a class="btn cta" data-hf style="--i:3" href={whatsappHref(s)} target="_blank" rel="noopener">
     {h.cta} <span aria-hidden="true">↗</span>
@@ -114,14 +132,41 @@ const WIDE = '(min-width: 900px)';
     position: absolute; width: var(--cw);
     left: calc((100cqw - var(--cw)) / 2);
     top: max(0px, (100cqh - 1.25 * var(--cw) - 73.5px) / 2);
-    padding: 9px 9px 0;
-    background: #fffdf9;
-    box-shadow: 0 1px 2px rgba(42, 34, 33, 0.08), 0 24px 50px -14px rgba(42, 34, 33, 0.3);
+    perspective: 1100px;
     will-change: transform;
     transition: transform 0.8s var(--ease), opacity 0.5s ease;
   }
   /* Below the screen until the entrance flies them in (deck.ts animates translate/rotate, the pile uses transform). */
   :global(.m) .hero:not(:global(.is-in)) .card { translate: 0 115vh; }
+  /* Turns on tap / "Gira" (deck.ts sets data-flip="1"). The front gives the box its height. */
+  .flip {
+    position: relative;
+    transform-style: preserve-3d; -webkit-transform-style: preserve-3d;
+    transition: transform 0.8s var(--ease);
+  }
+  .flip[data-flip="1"] { transform: rotateY(180deg); }
+  .face {
+    margin: 0;
+    background: #fffdf9;
+    box-shadow: 0 1px 2px rgba(42, 34, 33, 0.08), 0 24px 50px -14px rgba(42, 34, 33, 0.3);
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  }
+  .front { padding: 9px 9px 0; }
+  .back {
+    position: absolute; inset: 0; transform: rotateY(180deg);
+    background: #fbf7f1;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 14px;
+    padding: 22px 20px 18px;
+  }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .num { font-size: 10px; letter-spacing: 0.06em; color: var(--muted); }
+  .mono-gram {
+    flex: none; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(164, 94, 104, 0.5); border-radius: 50%;
+    font: italic 400 11px/1 var(--display); color: var(--accent);
+  }
+  .note { font: 400 clamp(21px, 6vw, 25px) / 1.22 var(--hand); color: var(--fg); text-wrap: balance; }
+  .sign { align-self: flex-end; font: 400 23px/1 var(--hand); color: var(--accent); }
   .photo { aspect-ratio: 4 / 5; }
   .photo :global(img) { pointer-events: none; }
   figcaption {
@@ -135,7 +180,8 @@ const WIDE = '(min-width: 900px)';
     display: flex; justify-content: space-between; align-items: center;
   }
   .count { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--muted); }
-  .next {
+  .acts { display: flex; align-items: center; gap: 18px; }
+  .act {
     height: 40px; padding: 0; background: none; border: 0; cursor: pointer;
     font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
   }

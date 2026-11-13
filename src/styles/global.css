@@ -27,6 +27,7 @@
   --display: var(--font-display), 'Times New Roman', serif;
   --body: var(--font-body), 'Helvetica Neue', Arial, sans-serif;
   --mono: var(--font-mono), Menlo, monospace;
+  --hand: var(--font-hand), 'Segoe Script', cursive;
   color-scheme: light;
 }
 

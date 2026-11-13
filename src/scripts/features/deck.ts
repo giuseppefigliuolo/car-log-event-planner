@@ -1,11 +1,14 @@
 /**
- * Mobile hero "Mazzo" (<900px): a pile of Polaroids. The front card flies off sideways on a tap, a swipe,
- * "Sfoglia" or the autoplay; the rest of the pile moves up (CSS transition on transform/opacity).
+ * Mobile hero "Mazzo" (<900px): a pile of Polaroids. The front card flies off sideways on a swipe, "Sfoglia" or the
+ * autoplay; the rest of the pile moves up (CSS transition on transform/opacity). A tap (or "Gira") turns the front card
+ * over instead, showing its handwritten back (CSS 3D: .flip[data-flip="1"], see Hero.astro).
  *  - size: from the deck's box, on every change of it (ResizeObserver: resize, fonts, name block height)
  *  - pile: lib/deck pileStyle(), the same the markup uses for the first paint
  *  - drag: Pointer Events; `touch-action: pan-y` leaves vertical scrolling to the browser (→ pointercancel)
+ *  - flip: only the front card can be turned; autoplay waits while it is (9 s after turning it, 2.5 s after turning it
+ *    back); a turned card that gets thrown shows its back while it flies and is reset once it's at the bottom
  *  - autoplay (motion only): every 3.2 s from the shared rAF loop, only while the deck is on screen,
- *    nothing else is moving it, the intro is over and the menu closed
+ *    nothing else is moving it, the card isn't turned, the intro is over and the menu closed
  *  - entrance (motion only): `enter(delay)`, started with the hero's (main.ts); the cards fly in from below
  *    through the independent `translate`/`rotate` properties, so the pile's `transform` is left alone
  */
@@ -39,6 +42,7 @@ export function initDeck(motion: boolean): Deck | null {
   let ready = motion ? Infinity : 0; // autoplay starts after the entrance
   let paused = 0; // autoplay paused until (ms)
   let last = 0; // time of the last throw
+  let turned = false; // the front card shows its back
 
   // ---- size (px; the CSS fallback in Hero.astro is the same formula) ----
   const layout = () => {
@@ -77,6 +81,34 @@ export function initDeck(motion: boolean): Deck | null {
     count.textContent = `${pad(top + 1)} / ${pad(n)}`;
   };
 
+  // ---- flip the front card ----
+  const flipOf = (c: HTMLElement) => $('[data-flip]', c)!;
+  const canFlip = (c: HTMLElement) => !!$('[data-face="back"]', c);
+  // Only the visible face is exposed to screen readers.
+  const face = (c: HTMLElement, on: boolean) => {
+    flipOf(c).dataset.flip = on ? '1' : '0';
+    $('[data-face="front"]', c)?.setAttribute('aria-hidden', String(on));
+    $('[data-face="back"]', c)?.setAttribute('aria-hidden', String(!on));
+  };
+  /** Turn the front card over (or back). False when it can't (a throw is running, or the card has no back). */
+  const flip = () => {
+    const c = cards[top];
+    if (flying || !canFlip(c)) return false;
+    turned = !turned;
+    face(c, turned);
+    paused = performance.now() + (turned ? 9000 : 2500);
+    return true;
+  };
+  // A thrown card is at the bottom of the pile, invisible: put it face up again without the turning animation.
+  const reset = (c: HTMLElement) => {
+    const f = flipOf(c);
+    if (f.dataset.flip !== '1') return;
+    f.style.transition = 'none';
+    face(c, false);
+    f.getBoundingClientRect(); // flush: the style change above must apply before the transition comes back
+    f.style.transition = '';
+  };
+
   // ---- throw the front card ----
   const fling = (dir: 1 | -1, byUser: boolean, dragDy?: number) => {
     if (flying) return;
@@ -94,10 +126,12 @@ export function initDeck(motion: boolean): Deck | null {
         : { duration: 460, easing: FLICK, fill: 'forwards' }
     );
     top = (top + 1) % n;
+    turned = false; // the new front card is face up
     pile(c);
     show(byUser);
     a.onfinish = () => {
       place(c, i); // back of the pile, invisible, no transition
+      reset(c);
       a.cancel();
       requestAnimationFrame(() => requestAnimationFrame(() => {
         c.style.transition = '';
@@ -106,7 +140,7 @@ export function initDeck(motion: boolean): Deck | null {
     };
   };
 
-  // ---- pointer: tap = next, swipe = throw that way, short drag = back in place ----
+  // ---- pointer: tap = turn, swipe = throw that way, short drag = back in place ----
   deck.addEventListener('pointerdown', (e) => {
     if (flying || press || (e.pointerType === 'mouse' && e.button !== 0)) return;
     press = { id: e.pointerId, x: e.clientX, y: e.clientY, lx: e.clientX, lt: e.timeStamp, v: 0, dx: 0, dy: 0, drag: false };
@@ -135,7 +169,7 @@ export function initDeck(motion: boolean): Deck | null {
     if (!p || e.pointerId !== p.id) return;
     press = null;
     paused = performance.now() + 2500;
-    if (!p.drag) fling(-1, true);
+    if (!p.drag) { if (!flip()) fling(-1, true); } // a card without a back goes to the next one
     else if (Math.abs(p.dx) > 70 || Math.abs(p.v) > 0.55) fling((p.dx || p.v) < 0 ? -1 : 1, true, p.dy);
     else settle();
   });
@@ -151,12 +185,19 @@ export function initDeck(motion: boolean): Deck | null {
     paused = performance.now() + 2500;
     fling(-1, true);
   });
+  // A card that can't turn: the button does what "Sfoglia" does.
+  $('[data-deck-flip]')?.addEventListener('click', () => {
+    if (!flip()) {
+      paused = performance.now() + 2500;
+      fling(-1, true);
+    }
+  });
 
   // ---- autoplay ----
   if (motion) {
     const zone = watch(deck, '0px');
     subscribe((f) => {
-      if (!zone.on || flying || press || f.now < ready || f.now < paused || f.now - last < EVERY) return;
+      if (!zone.on || flying || press || turned || f.now < ready || f.now < paused || f.now - last < EVERY) return;
       if (html.classList.contains('intro') || html.classList.contains('menu-open')) return;
       fling(-1, false);
     });

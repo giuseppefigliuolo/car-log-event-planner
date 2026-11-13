@@ -39,7 +39,9 @@ const pages = defineCollection({
         image: pic,
         // Mobile hero "Mazzo": the Polaroids of what Carmen organises, in the order they're flipped.
         // The Storie show for whom, so none of these photos should appear there.
-        deck: z.array(z.object({ title: z.string().min(1), image: pic })).min(5).max(12)
+        // `back` is the handwritten note on the reverse (tap = the card turns). Without it the card doesn't turn.
+        // TODO: the six notes are drafts, to be confirmed with Carmen.
+        deck: z.array(z.object({ title: z.string().min(1), back: z.string().optional().default(''), image: pic })).min(5).max(12)
       }),
       // Scrolling band; also the services listed in the JSON-LD.
       services: lines,

@@ -24,12 +24,12 @@
     "scroll": "Scorri",
     "image": { "src": "../../assets/images/velo.jpg", "alt": "Carmen sistema il velo della sposa all'uscita della chiesa" },
     "deck": [
-      { "title": "Matrimoni", "image": { "src": "../../assets/images/sposi-fumogeni.jpg", "alt": "Sposi tra i fumogeni colorati" } },
-      { "title": "Battesimi", "image": { "src": "../../assets/images/battesimo-lilla.jpg", "alt": "Torta di battesimo nei toni del lilla" } },
-      { "title": "Primo compleanno", "image": { "src": "../../assets/images/one-arcobaleno.jpg", "alt": "Biscotti arcobaleno per un primo compleanno" } },
-      { "title": "Compleanni", "image": { "src": "../../assets/images/nove-anni.jpg", "alt": "Festa rosa per i nove anni" } },
-      { "title": "Dettagli", "image": { "src": "../../assets/images/giuseppe-dettagli.jpg", "alt": "Dettagli a tema aviatore con orsetto" } },
-      { "title": "Eventi privati", "image": { "src": "../../assets/images/festa-verde.jpg", "alt": "Sala allestita per una festa in verde e nero, con palloncini e tavolata" } }
+      { "title": "Matrimoni", "back": "Dal primo sopralluogo all'ultimo ballo ci sono io: voi pensate solo a godervi la giornata.", "image": { "src": "../../assets/images/sposi-fumogeni.jpg", "alt": "Sposi tra i fumogeni colorati" } },
+      { "title": "Battesimi", "back": "Toni delicati, dettagli su misura e un tema pensato attorno al suo nome.", "image": { "src": "../../assets/images/battesimo-lilla.jpg", "alt": "Torta di battesimo nei toni del lilla" } },
+      { "title": "Primo compleanno", "back": "Il primo anno merita una festa da ricordare: colori, dolci e piccole sorprese.", "image": { "src": "../../assets/images/one-arcobaleno.jpg", "alt": "Biscotti arcobaleno per un primo compleanno" } },
+      { "title": "Compleanni", "back": "Che siano 9 o 90 anni: un tema, un'atmosfera, una festa che vi somiglia.", "image": { "src": "../../assets/images/nove-anni.jpg", "alt": "Festa rosa per i nove anni" } },
+      { "title": "Dettagli", "back": "Segnaposti, bomboniere, biscotti decorati: è nei dettagli che si vede la cura.", "image": { "src": "../../assets/images/giuseppe-dettagli.jpg", "alt": "Dettagli a tema aviatore con orsetto" } },
+      { "title": "Eventi privati", "back": "Cene, anniversari, feste in casa: ogni occasione ha la sua atmosfera.", "image": { "src": "../../assets/images/festa-verde.jpg", "alt": "Sala allestita per una festa in verde e nero, con palloncini e tavolata" } }
     ]
   },
   "services": ["Matrimoni", "Battesimi", "Compleanni", "Primo compleanno", "18 anni", "Segnaposti", "Eventi privati"],

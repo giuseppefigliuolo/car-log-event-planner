@@ -54,8 +54,9 @@ and a CSS animation hides the overlay at 6.5 s if JS never ran.
 | `data-marquee` | services band | drifts left, faster with scroll velocity |
 | `data-cursor="Label"` | images | pink bubble with the label follows the pointer (desktop) |
 | `data-magnet` | contact CTA | pulled toward the pointer when near |
-| `data-deck` / `data-card` | mobile hero pile | Polaroids sized from the deck's box; tap/swipe/"Sfoglia" throw the front card, autoplay every 3.2 s (`features/deck.ts`) |
-| `data-deck-ctrl`, `data-deck-count`, `data-deck-next` | under the pile | row as wide as a card, "01 / 06" counter, "Sfoglia" button |
+| `data-deck` / `data-card` | mobile hero pile | Polaroids sized from the deck's box; swipe/"Sfoglia" throw the front card, tap/"Gira" turn it over, autoplay every 3.2 s (`features/deck.ts`) |
+| `data-flip` (`0`/`1`), `data-face` | inside a card | the 3D flipper and its two faces (`front` = the photo, `back` = the handwritten note, only when the card has `back` text); `aria-hidden` follows the visible face |
+| `data-deck-ctrl`, `data-deck-count`, `data-deck-flip`, `data-deck-next` | under the pile | row as wide as a card, "01 / 06" counter, "Gira" and "Sfoglia" buttons |
 | `data-hdr`, `data-fab`, `data-menu*` | chrome | header hide/glass (tinted with the page colour), mobile WhatsApp button, menu; `data-logo="on/off"` on the header hides the logo over the mobile hero |
 
 ## 4. Animation loop

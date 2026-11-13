@@ -55,6 +55,16 @@ export default defineConfig({
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['Menlo', 'monospace']
+    },
+    {
+      // Handwriting: the back of the Polaroids and the review notes.
+      provider: fontProviders.google(),
+      name: 'Caveat',
+      cssVariable: '--font-hand',
+      weights: [400, 500],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['Segoe Script', 'Bradley Hand', 'cursive']
     }
   ],
   integrations: [sitemap()],

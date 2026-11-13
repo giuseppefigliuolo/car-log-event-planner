@@ -70,6 +70,8 @@ collections:
                 hint: "Cosa organizzi, nell'ordine in cui si sfogliano. Non usare le foto delle Storie."
                 fields:
                   - { label: Titolo, name: title, widget: string }
+                  # TODO: i sei testi sono bozze, da confermare con Carmen.
+                  - { label: 'Retro (nota a mano, si vede toccando la foto)', name: back, widget: text, required: false, hint: 'Una o due frasi. Se vuoto, la foto non si gira.' }
                   - { label: Foto, name: image, widget: object, collapsed: true, fields: [{ label: Immagine, name: src, widget: image }, { label: Testo alternativo (SEO/accessibilità), name: alt, widget: string }] }
           - { label: Eventi (fascia scorrevole), name: services, widget: list, field: { label: Evento, name: service, widget: string } }
           - label: Il mio lavoro
