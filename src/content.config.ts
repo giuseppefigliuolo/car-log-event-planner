@@ -32,10 +32,14 @@ const pages = defineCollection({
         meta: z.string(),
         lead: z.string(),
         leadDesktop: z.string(),
+        /** Under the name in the mobile hero. */
+        leadMobile: z.string(),
         cta: z.string(),
-        ctaShort: z.string(),
         scroll: z.string(),
-        image: pic
+        image: pic,
+        // Mobile hero "Mazzo": the Polaroids of what Carmen organises, in the order they're flipped.
+        // The Storie show for whom, so none of these photos should appear there.
+        deck: z.array(z.object({ title: z.string().min(1), image: pic })).min(5).max(12)
       }),
       // Scrolling band; also the services listed in the JSON-LD.
       services: lines,

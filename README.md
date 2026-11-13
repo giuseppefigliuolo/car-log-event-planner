@@ -22,7 +22,7 @@ The design file is a set of proposals switched by props; this build implements t
 | Part | Variant |
 |---|---|
 | Intro | **Sequenza** — event photos wipe in one after another with their category, then the curtain lifts |
-| Hero < 900px | **Full-bleed** — the veil photo full screen, the name edge to edge |
+| Hero < 900px | **Mazzo** — the name on one line, a pile of Polaroids of the events Carmen organises (tap, swipe, "Sfoglia", autoplay), WhatsApp |
 | Hero ≥ 900px | **Split** — text left, the vertical photo right at full height |
 | Fonts | **Bodoni Moda + Work Sans** (+ IBM Plex Mono for small labels) |
 | Storie | **Stack** — full-height cards that stick and pile up |
@@ -43,11 +43,11 @@ src/
   assets/images/           ← photos (optimized at build: AVIF + WebP, responsive widths)
   components/
     sections/*.astro       ← one file per page section, scoped CSS next to markup
-    ui/                    ← Img (responsive <picture>), Lines (masked headings), Brand ("Carmen *Log*")
+    ui/                    ← Img (responsive <picture>, `skip` per breakpoint), Lines (masked headings), Brand ("Carmen *Log*")
     Seo.astro              ← meta, Open Graph, canonical, hreflang, JSON-LD graph
     Header.astro, Intro.astro, Footer.astro, Fab.astro
   layouts/Base.astro       ← <head>, fonts, motion/intro flags
-  lib/                     ← content loaders, rich text, WhatsApp link, nav, base-path URLs
+  lib/                     ← content loaders, rich text, WhatsApp link, nav, base-path URLs, deck pile
   pages/
     index.astro
     robots.txt.ts          ← blocks crawlers unless INDEXABLE=true
@@ -55,7 +55,7 @@ src/
   scripts/
     main.ts                ← entry, load order
     core/                  ← single rAF loop (read→write phases), Lenis, visibility, helpers
-    features/              ← intro, reveal, fit, chrome (header/bg/fab), scroll-fx, marquee, menu, cursor
+    features/              ← intro, reveal, fit, chrome (header/bg/fab), deck, scroll-fx, marquee, menu, cursor
   styles/global.css        ← tokens, primitives, motion initial states
 public/admin/              ← Decap CMS (config.yml)
 .github/workflows/deploy.yml ← build + deploy to GitHub Pages on every push to main
@@ -69,7 +69,8 @@ public/admin/              ← Decap CMS (config.yml)
 - Zero framework runtime: HTML + inlined CSS; one ~9 KB (gzip) script incl. smooth scroll.
 - One animation loop for everything; layout measured on resize only; only `transform`, `opacity`,
   `clip-path` are animated (the story stack dims with an overlay's opacity, not `filter`).
-- Hero photo preloaded with `fetchpriority=high`; everything else lazy with explicit sizes (no CLS).
+- Hero photo (desktop) and the first two deck cards (mobile) load with `fetchpriority=high`, each only at its
+  own breakpoint; everything else lazy with explicit sizes (no CLS).
 - Intro plays once per session (~3.9 s, the design's timing) over the already-rendered hero; its photos
   are fetched only when it plays.
 - Fonts self-hosted by Astro (Bodoni Moda with its optical-size axis, Work Sans, IBM Plex Mono),

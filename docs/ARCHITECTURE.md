@@ -15,8 +15,10 @@ Claude Design project "Landing page wedding planner"
 | `Carmen Log Proposte.dc.html` | The comparison board (each proposal in an iframe, "Turno 2" mobile, "Turno 3" desktop + fonts). |
 | `Carmen Log Landing.dc.html` | First round. Not used. |
 
-The photos in `src/assets/images/` are the design's `assets/*.jpg`, unchanged (`festa-verde.jpg` is not
-used by the page, kept for the CMS).
+The photos in `src/assets/images/` are the design's `assets/*.jpg`, unchanged.
+
+The mobile hero "Mazzo" and the mobile spacing came later as a written brief (not in the `design/` copies):
+the brief is the reference for those.
 
 ## 2. Boot sequence
 
@@ -24,8 +26,9 @@ used by the page, kept for the CMS).
 <head> inline script ─ prefers-reduced-motion? ── no ──→ html.m
                        first visit this session? ─ yes ─→ html.intro   (overlay visible from first paint)
 main.ts
-  always:  initSmooth (Lenis only with .m) → initFit → initMenu → initChrome
+  always:  initSmooth (Lenis only with .m) → initFit → initMenu → initChrome → initDeck
   .m only: runIntro() ─ hero promise → heroIn(delay)      (adds .is-in on [data-hero], --hd = delay)
+                                     + deck.enter(delay)  (cards fly in, autoplay starts after)
                        └ done promise → initReveal starts revealing
            initScrollFx, initMarquee, initCursor (fine pointer only)
   start()  one rAF loop; remeasure on resize / body ResizeObserver / fonts.ready / load
@@ -44,14 +47,16 @@ and a CSS animation hides the overlay at 6.5 s if JS never ran.
 | `data-r` | any | fade + rise on entering the viewport (batch-staggered 80 ms via `--d`) |
 | `data-rm` / `data-rl` | heading / its lines | lines slide out of `.mask`, `--i` × 110 ms |
 | `data-px` (`data-ps`, `data-px-wide`, `data-ps-wide`) | image or wrapper | parallax relative to its parent; with a scale the offset is clamped to the spare room |
-| `data-fit` (`="m"`: only < 900px) | the giant names | font-size fitted to the parent's content width (iterated: Bodoni's opsz axis makes width non-linear in size) |
+| `data-fit` (`="m"`: only < 900px) | the giant names | font-size fitted to the parent's content width (iterated: Bodoni's opsz axis makes width non-linear in size); the hero's parent is the centred name block |
 | `data-words` / `data-wd` | manifesto | words get `.on` as the paragraph scrolls (82% → top) |
 | `data-sc` / `data-dim` | story slots | covered card scales to 0.93 and dims by 25% |
 | `data-bg="#hex"` | sections | page background blends to it when the section crosses 55% of the viewport |
 | `data-marquee` | services band | drifts left, faster with scroll velocity |
 | `data-cursor="Label"` | images | pink bubble with the label follows the pointer (desktop) |
 | `data-magnet` | contact CTA | pulled toward the pointer when near |
-| `data-hdr`, `data-fab`, `data-menu*` | chrome | header hide/frost, mobile WhatsApp button, menu |
+| `data-deck` / `data-card` | mobile hero pile | Polaroids sized from the deck's box; tap/swipe/"Sfoglia" throw the front card, autoplay every 3.2 s (`features/deck.ts`) |
+| `data-deck-ctrl`, `data-deck-count`, `data-deck-next` | under the pile | row as wide as a card, "01 / 06" counter, "Sfoglia" button |
+| `data-hdr`, `data-fab`, `data-menu*` | chrome | header hide/frost, mobile WhatsApp button, menu; `data-logo="on/off"` on the header hides the logo over the mobile hero |
 
 ## 4. Animation loop
 
@@ -59,6 +64,7 @@ and a CSS animation hides the overlay at 6.5 s if JS never ran.
 `y, dy, vel, k (60 Hz frames elapsed), vw, vh, changed`. Layout is cached in `onMeasure` callbacks
 (rebuilt on resize); per-frame reads only where unavoidable: the sticky story slots (only while the stack is
 near the viewport) and the magnet button. `initFit` registers first so later measures see final sizes.
+The deck's autoplay is a subscriber too (no timers); its card sizes follow the deck's own ResizeObserver.
 
 ## 5. Content model
 
@@ -69,13 +75,17 @@ whatsappHref()` (number + prefilled message from settings).
 ## 6. Design vs. implementation
 
 - Variants: only the chosen defaults are built; the alternatives stay in `design/`.
-- Hero: the design renders two different heroes (mobile Full-bleed / desktop Split) and switches in JS at
-  900px. Here it's one `<section>` with one `h1`, rearranged by CSS at the same breakpoint (no JS, no
-  duplicated heading).
+- Hero: the design renders two different heroes (mobile / desktop Split) and switches in JS at 900px.
+  Here it's one `<section>` with one `h1`, rearranged by CSS at the same breakpoint (no JS, no duplicated
+  heading). Each layout's photos are downloaded only at its breakpoint (`Img` `skip`: a 1×1
+  inline placeholder source), so phones don't fetch the veil photo and desktops don't fetch the deck.
+- Mazzo: the pile's first paint comes from the markup (`lib/deck.ts` `pileStyle()` inline, card size in
+  container-query units, same formula as the script), so the script takes over without a jump and the
+  pile still shows without JS. The counter's `aria-live` is switched off for autoplay flips (only the
+  visitor's flips are announced) and the "Sfoglia" button's label contains its visible text.
 - Background-image `<div>`s became real `<img>` (responsive AVIF/WebP, alt text) for performance and SEO.
 - Contatti columns: on phones each column's photos run twice (one pass of 4 is ~650px, the section 108svh);
   from 900px up one pass fills the section and the repeat is hidden.
-- Mobile hero: a faint top gradient keeps the header logo legible over the white veil.
 - Story stack dims with a black overlay's opacity instead of `filter: brightness()` (compositor-only).
 - Reduced motion: transitions are 0 s (not 0.01 ms: `transition-property` defaults to `all`, which made
   the fitting measure the previous font-size).

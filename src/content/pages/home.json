@@ -19,10 +19,18 @@
     "meta": "Basilicata (PZ) · Oltre 300 eventi",
     "lead": "Realizzo matrimoni ed eventi che raccontano la tua storia.",
     "leadDesktop": "Cura, stile ed armonia in ogni dettaglio.",
+    "leadMobile": "Matrimoni ed eventi che raccontano la tua storia.",
     "cta": "Scrivimi su WhatsApp",
-    "ctaShort": "WhatsApp",
     "scroll": "Scorri",
-    "image": { "src": "../../assets/images/velo.jpg", "alt": "Carmen sistema il velo della sposa all'uscita della chiesa" }
+    "image": { "src": "../../assets/images/velo.jpg", "alt": "Carmen sistema il velo della sposa all'uscita della chiesa" },
+    "deck": [
+      { "title": "Matrimoni", "image": { "src": "../../assets/images/sposi-fumogeni.jpg", "alt": "Sposi tra i fumogeni colorati" } },
+      { "title": "Battesimi", "image": { "src": "../../assets/images/battesimo-lilla.jpg", "alt": "Torta di battesimo nei toni del lilla" } },
+      { "title": "Primo compleanno", "image": { "src": "../../assets/images/one-arcobaleno.jpg", "alt": "Biscotti arcobaleno per un primo compleanno" } },
+      { "title": "Compleanni", "image": { "src": "../../assets/images/nove-anni.jpg", "alt": "Festa rosa per i nove anni" } },
+      { "title": "Dettagli", "image": { "src": "../../assets/images/giuseppe-dettagli.jpg", "alt": "Dettagli a tema aviatore con orsetto" } },
+      { "title": "Eventi privati", "image": { "src": "../../assets/images/festa-verde.jpg", "alt": "Sala allestita per una festa in verde e nero, con palloncini e tavolata" } }
+    ]
   },
   "services": ["Matrimoni", "Battesimi", "Compleanni", "Primo compleanno", "18 anni", "Segnaposti", "Eventi privati"],
   "manifesto": {

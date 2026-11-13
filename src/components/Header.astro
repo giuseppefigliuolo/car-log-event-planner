@@ -58,6 +58,13 @@ const wa = whatsappHref(s);
   .logo-name { font: italic 500 24px/1 var(--display); letter-spacing: -0.01em; }
   .logo-sub { font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); }
   @media (hover: hover) { .logo:hover .logo-sub { color: var(--muted); } }
+  /* <900px: hidden while the hero shows the name (chrome.ts sets data-logo); with motion on, from the
+     first paint. Keyboard focus still shows it. */
+  @media (max-width: 899.98px) {
+    .logo { transition: color 0.3s, opacity 0.5s ease; }
+    .hdr[data-logo='off'] .logo:not(:focus-visible),
+    :global(.m) .hdr:not([data-logo]) .logo:not(:focus-visible) { opacity: 0; pointer-events: none; }
+  }
 
   .hdr-nav {
     display: none; align-items: center; gap: clamp(24px, 2.6vw, 40px);
