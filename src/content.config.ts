@@ -73,6 +73,11 @@ const pages = defineCollection({
           )
           .min(1)
       }),
+      // "Grazie, Carmen": heading of the reviews section (the reviews themselves are the `reviews` collection).
+      reviews: z.object({
+        kicker: z.string(),
+        title: lines
+      }),
       instagram: z.object({
         kicker: z.string(),
         title: lines,
@@ -123,4 +128,20 @@ const settings = defineCollection({
   })
 });
 
-export const collections = { pages, settings };
+// One file per review in src/content/reviews/. Real reviews only: with none published the section isn't rendered.
+const reviews = defineCollection({
+  loader: glob({ pattern: '*.json', base: './src/content/reviews' }),
+  schema: z.object({
+    text: z.string().min(1),
+    author: z.string().min(1),
+    /** Event type, e.g. "Matrimonio". */
+    type: z.string().optional().default(''),
+    place: z.string().optional().default(''),
+    /** Ascending; ties keep the file order. */
+    order: z.number().int().optional().default(0),
+    /** Off by default: an incomplete entry never reaches the page. */
+    published: z.boolean().optional().default(false)
+  })
+});
+
+export const collections = { pages, settings, reviews };

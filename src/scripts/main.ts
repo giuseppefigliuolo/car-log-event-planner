@@ -19,6 +19,7 @@ import { heroIn, runIntro } from './features/intro';
 import { initMarquee } from './features/marquee';
 import { initMenu } from './features/menu';
 import { initReveal } from './features/reveal';
+import { initReviews } from './features/reviews';
 import { initScrollFx } from './features/scroll-fx';
 
 const motion = document.documentElement.classList.contains('m');
@@ -39,6 +40,7 @@ if (motion) {
   initReveal(intro.done);
   initCount();
   initScrollFx();
+  initReviews();
   initMarquee();
   if (fine()) initCursor();
 }

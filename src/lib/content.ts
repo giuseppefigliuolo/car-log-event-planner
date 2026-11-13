@@ -1,4 +1,4 @@
-import { getEntry } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 
 export async function getHome() {
   const entry = await getEntry('pages', 'home');
@@ -12,5 +12,15 @@ export async function getSettings() {
   return entry.data;
 }
 
+/** Published reviews, in the CMS order. Empty until Carmen adds real ones (the section then isn't rendered). */
+export async function getReviews() {
+  const all = await getCollection('reviews');
+  return all
+    .filter((r) => r.data.published)
+    .sort((a, b) => a.data.order - b.data.order || a.id.localeCompare(b.id))
+    .map((r) => r.data);
+}
+
 export type Home = Awaited<ReturnType<typeof getHome>>;
 export type Settings = Awaited<ReturnType<typeof getSettings>>;
+export type Review = Awaited<ReturnType<typeof getReviews>>[number];

@@ -97,6 +97,10 @@
       }
     ]
   },
+  "reviews": {
+    "kicker": "Recensioni",
+    "title": ["Grazie,", "*Carmen*"]
+  },
   "instagram": {
     "kicker": "Instagram",
     "title": ["Dietro", "*ogni dettaglio*"],

@@ -108,6 +108,13 @@ collections:
                   - { label: Luogo, name: place, widget: string, required: false }
                   - { label: Testo, name: text, widget: text }
                   - { label: Foto, name: image, widget: object, collapsed: true, fields: [{ label: Immagine, name: src, widget: image }, { label: Testo alternativo (SEO/accessibilità), name: alt, widget: string }] }
+          - label: Recensioni (titolo della sezione)
+            name: reviews
+            widget: object
+            hint: 'Le recensioni vere si aggiungono nella sezione "Recensioni" del menu. Senza recensioni pubblicate la sezione non compare.'
+            fields:
+              - { label: Occhiello, name: kicker, widget: string }
+              - { label: Titolo, name: title, widget: list, hint: 'Una riga per voce. *parola* = corsivo rosa.', field: { label: Riga, name: line, widget: string } }
           - label: Instagram
             name: instagram
             widget: object
@@ -136,6 +143,25 @@ collections:
                 min: 3
                 max: 3
                 field: { label: Colonna, name: column, widget: list, min: 2, field: { label: Foto, name: img, widget: image } }
+
+  # Una scheda per recensione (src/content/reviews/*.json). Solo recensioni vere, mai testi di prova.
+  - name: recensioni
+    label: Recensioni
+    label_singular: Recensione
+    folder: src/content/reviews
+    format: json
+    extension: json
+    create: true
+    slug: '{{fields.author}}'
+    summary: '{{author}} — {{type}}'
+    editor: { preview: false }
+    fields:
+      - { label: Testo, name: text, widget: text }
+      - { label: Autore (come appare sul biglietto), name: author, widget: string }
+      - { label: 'Tipo di evento (es. Matrimonio)', name: type, widget: string, required: false }
+      - { label: Luogo, name: place, widget: string, required: false }
+      - { label: 'Ordine (numero più basso = prima)', name: order, widget: number, value_type: int, default: 0 }
+      - { label: Pubblicata, name: published, widget: boolean, default: false, hint: 'Se spenta, la recensione non compare sul sito.' }
 
   - name: impostazioni
     label: Impostazioni

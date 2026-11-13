@@ -1,0 +1,70 @@
+---
+/**
+ * Recensioni ("Grazie, Carmen"): a horizontal strip of paper notes, one per review (content collection `reviews`,
+ * published ones only; no reviews → no section). Scroll-snapped; the note nearest the middle of the screen is
+ * straight, the others lean (features/reviews.ts, on the shared rAF loop).
+ * Deliberately no schema.org Review/AggregateRating: Google ignores reviews a business publishes about itself.
+ */
+import type { Home, Review } from '../../lib/content';
+import Lines from '../ui/Lines.astro';
+
+interface Props { home: Home; reviews: Review[] }
+const { home, reviews } = Astro.props;
+const r = home.reviews;
+// Base lean (degrees) of each note, repeating.
+const TILTS = [-2.4, 1.8, -1.6];
+---
+
+{reviews.length > 0 && (
+  <section id="recensioni" class="rev" data-bg="#F2E4E0" aria-labelledby="rev-t">
+    <div class="wrap">
+      <header class="head">
+        <span class="kicker" data-r>{r.kicker}</span>
+        <h2 id="rev-t" class="display" data-rm><Lines lines={r.title} /></h2>
+      </header>
+      <div class="track" data-reviews data-r role="region" aria-label={r.kicker} tabindex="0">
+        {reviews.map((v, i) => (
+          <figure class="note" data-tilt={TILTS[i % TILTS.length]}>
+            <span class="mark" aria-hidden="true">“</span>
+            <blockquote>{v.text}</blockquote>
+            <figcaption>
+              <span class="who">{v.author}</span>
+              {(v.type || v.place) && <span class="mono what">{[v.type, v.place].filter(Boolean).join(' · ')}</span>}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .rev { padding: var(--sp-section) 0; }
+  .wrap { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(28px, 4vw, 56px); }
+  .head { display: flex; flex-direction: column; gap: 14px; padding: 0 var(--gutter); }
+  /* On the pink background the standard label colour is a touch too light. */
+  .head .kicker { color: #5e504d; }
+  h2 { font-size: clamp(44px, 8vw, 124px); line-height: 0.95; }
+
+  .track {
+    display: flex; gap: 16px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    /* Bottom: 30px of layout, plus 30px of room for the notes' shadow (the strip clips it), taken back by the margin. */
+    padding: 18px 7vw 60px; margin-bottom: -30px;
+    scrollbar-width: none;
+  }
+  .track::-webkit-scrollbar { display: none; }
+
+  .note {
+    flex: none; width: min(80vw, 380px); scroll-snap-align: center;
+    margin: 0; padding: 26px 24px 22px;
+    background: #fffdf9;
+    box-shadow: 0 1px 2px rgba(42, 34, 33, 0.06), 0 20px 44px -20px rgba(42, 34, 33, 0.32);
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .mark { display: block; height: 26px; font: 400 64px/0.75 var(--display); color: var(--accent); }
+  blockquote { font: italic 400 21px/1.35 var(--display); letter-spacing: -0.01em; color: var(--fg); }
+  figcaption { margin-top: auto; display: flex; flex-direction: column; gap: 4px; }
+  .who { font: 400 25px/1.1 var(--hand); color: var(--fg); }
+  .what { font-size: 10px; letter-spacing: 0.04em; color: var(--muted); }
+</style>

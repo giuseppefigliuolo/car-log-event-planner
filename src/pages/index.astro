@@ -9,12 +9,14 @@ import Marquee from '../components/sections/Marquee.astro';
 import Manifesto from '../components/sections/Manifesto.astro';
 import About from '../components/sections/About.astro';
 import Stories from '../components/sections/Stories.astro';
+import Reviews from '../components/sections/Reviews.astro';
 import Instagram from '../components/sections/Instagram.astro';
 import Contact from '../components/sections/Contact.astro';
-import { getHome, getSettings } from '../lib/content';
+import { getHome, getReviews, getSettings } from '../lib/content';
 
 const home = await getHome();
 const settings = await getSettings();
+const reviews = await getReviews();
 ---
 
 <Base home={home} settings={settings}>
@@ -26,6 +28,7 @@ const settings = await getSettings();
     <Manifesto home={home} />
     <About home={home} settings={settings} />
     <Stories home={home} />
+    <Reviews home={home} reviews={reviews} />
     <Instagram home={home} settings={settings} />
     <Contact home={home} settings={settings} />
   </main>
