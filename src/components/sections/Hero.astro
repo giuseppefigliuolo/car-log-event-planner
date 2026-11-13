@@ -5,7 +5,8 @@
  *   what Carmen organises — tap, swipe or "Sfoglia" to flip, autoplay (features/deck.ts) — and WhatsApp.
  * ≥900px "Split": text column left, the vertical photo right, full height.
  * Entrance: [data-hl] titles, [data-hf] texts, [data-hi] photo wipe (global.css), cards fly in (deck.ts).
- * Each layout's photos are downloaded only where that layout shows (Img `skip`).
+ * Each layout's photos are downloaded only where that layout shows (Img `skip`); the cards behind the first two
+ * wait for the page to be idle (Img `defer`).
  */
 import type { Home, Settings } from '../../lib/content';
 import { areaLabel, whatsappHref } from '../../lib/contact';
@@ -52,7 +53,7 @@ const WIDE = '(min-width: 900px)';
       return (
         <figure class="card" data-card style={`z-index:${p.zIndex};opacity:${p.opacity};transform:${p.transform}`}>
           <div class="media photo">
-            <Img src={c.image.src} alt={c.image.alt} class="cover" sizes="300px" widths={[320, 480, 640, 900]} priority={i < 2} skip={WIDE} />
+            <Img src={c.image.src} alt={c.image.alt} class="cover" sizes="min(300px, 66vw)" widths={[320, 480, 640, 900]} ratio={4 / 5} priority={i < 2} defer={i >= 2} skip={WIDE} />
           </div>
           <figcaption>{c.title}</figcaption>
         </figure>

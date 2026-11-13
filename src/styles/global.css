@@ -16,7 +16,7 @@
   --fg-2: #4a3e3c;
   --muted: #6e5f5c;
   --accent: #a45e68;    /* rosa antico */
-  --ghost: #dccfcb;     /* manifesto words not yet read */
+  --ghost: #988a86;     /* manifesto words not yet read (≥3:1 on --bg: WCAG AA for large text) */
   --cream: #f8f4ef;
   --line: rgba(42, 34, 33, 0.14);
   --line-2: rgba(42, 34, 33, 0.25);

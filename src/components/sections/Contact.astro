@@ -25,7 +25,7 @@ const COLS = [
     {c.columns.map((col, i) => (
       <div class="col" data-px={COLS[i].speed} style={`margin-top:${COLS[i].offset}`}>
         {[...col, ...col].map((src) => (
-          <div class="media tile"><Img src={src} alt="" class="cover" sizes="34vw" widths={[240, 360, 480, 640]} /></div>
+          <div class="media tile"><Img src={src} alt="" class="cover" sizes="34vw" widths={[240, 360, 480, 640]} ratio={3 / 4} /></div>
         ))}
       </div>
     ))}

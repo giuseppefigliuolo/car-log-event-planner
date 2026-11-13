@@ -2,8 +2,10 @@
 /**
  * First-visit intro ("Sequenza"): event photos wipe in one after another, each with its category,
  * then the curtain lifts onto the hero. Rendered in HTML (so it paints with the page), only visible
- * under `html.intro`. Photos have no src until the intro actually runs (intro.ts sets it from data-src):
- * returning visitors never download them, and the clipped frames don't wait on lazy-loading heuristics.
+ * under `html.intro`. Photos have no src until the intro actually runs: returning visitors never download
+ * them, and the clipped frames don't wait on lazy-loading heuristics. The inline script right after the markup
+ * starts the downloads at parse time (the first photo is the LCP): waiting for the bundle at the end of <body>
+ * would put the whole JS download in front of them.
  */
 import { getImage } from 'astro:assets';
 import type { Home, Settings } from '../lib/content';
@@ -15,7 +17,7 @@ const { home, settings } = Astro.props;
 const frames = await Promise.all(
   home.intro.frames.map(async (f) => ({
     label: f.label,
-    img: await getImage({ src: f.image, width: 640, height: 853, fit: 'cover', format: 'webp', quality: 58 })
+    img: await getImage({ src: f.image, width: 480, height: 640, fit: 'cover', format: 'webp', quality: 58 })
   }))
 );
 ---
@@ -33,6 +35,14 @@ const frames = await Promise.all(
     </div>
     <div class="word display"><Brand name={settings.brand} attr="data-intro-w" /></div>
   </div>
+  <script is:inline>
+    if (document.documentElement.classList.contains('intro')) {
+      document.querySelectorAll('img[data-intro-img]').forEach(function (img, i) {
+        if (!i) img.fetchPriority = 'high';
+        img.src = img.dataset.src;
+      });
+    }
+  </script>
 )}
 
 <style>

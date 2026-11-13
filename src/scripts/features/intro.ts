@@ -50,8 +50,10 @@ export function runIntro(): Intro {
   // Never leave the page locked, whatever happens.
   const guard = setTimeout(finish, 6000);
 
-  // Fetch the photos now (they have no src in the HTML), start once they're decoded — at most 1.2 s.
+  // The photos have no src in the HTML: an inline script (Intro.astro) already started them at parse time;
+  // this covers the case where it didn't run. Start once they're decoded — at most 1.2 s.
   imgs.forEach((img, i) => {
+    if (img.getAttribute('src')) return;
     if (!i) img.fetchPriority = 'high';
     img.src = img.dataset.src!;
   });

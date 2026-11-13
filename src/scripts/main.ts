@@ -8,6 +8,7 @@
  */
 import { fine } from './core/dom';
 import { start } from './core/loop';
+import { initDefer } from './core/defer';
 import { initSmooth } from './core/smooth';
 import { initChrome } from './features/chrome';
 import { initCursor } from './features/cursor';
@@ -22,6 +23,7 @@ import { initScrollFx } from './features/scroll-fx';
 const motion = document.documentElement.classList.contains('m');
 
 initSmooth(motion);
+initDefer();
 initFit(); // first: later measurements depend on the fitted sizes
 initMenu();
 initChrome();

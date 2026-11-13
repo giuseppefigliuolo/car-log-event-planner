@@ -35,7 +35,7 @@ const ig = home.instagram;
       {ig.feed.slice(0, 12).map((g) => (
         <li data-r>
           <a class="media tile" data-cursor="Apri" href={s.instagram} target="_blank" rel="noopener">
-            <Img src={g.src} alt={g.alt} class="cover" sizes="(min-width: 900px) 16vw, 33vw" widths={[240, 360, 480, 640]} />
+            <Img src={g.src} alt={g.alt} class="cover" sizes="(min-width: 900px) 16vw, 33vw" widths={[240, 360, 480, 640]} ratio={1} />
           </a>
         </li>
       ))}

@@ -2,6 +2,10 @@
 /**
  * Responsive image: AVIF + WebP sources, lazy by default, explicit dimensions
  * (no layout shift). Extra attributes (data-*, class) land on the <img>.
+ * `ratio` (width / height of the frame the photo is shown in) crops at build time what object-fit: cover
+ * would hide anyway, so no bytes are spent on pixels nobody sees (same centred crop as the CSS).
+ * `defer` leaves the photo out of the initial load: sources/src sit in data-* and scripts/core/defer.ts fills
+ * them in once the page is idle (for photos that can't be seen yet, e.g. the back of the hero's pile).
  * `art` adds art direction: a different photo for `art.media` (Astro's <Picture> has no media sources).
  * `skip` is a media query where the image isn't shown (e.g. the other breakpoint's layout): there the browser
  * picks a 1×1 inline placeholder and downloads nothing, even for an eager `priority` image.
@@ -19,49 +23,67 @@ interface Props {
   priority?: boolean;
   class?: string;
   quality?: number;
+  ratio?: number;
+  defer?: boolean;
   art?: Art;
   skip?: string;
   [key: `data-${string}`]: unknown;
   style?: string;
 }
 
-const { src, alt, sizes, widths, priority = false, class: cls, quality = 68, art, skip, ...rest } = Astro.props;
+const { src, alt, sizes, widths, priority = false, class: cls, quality = 68, ratio, defer = false, art, skip, ...rest } = Astro.props;
 
+// Widest useful width: the photo's own, or what a `ratio` crop of it can give without upscaling.
+const reach = (img: ImageMetadata) => (ratio ? Math.min(img.width, Math.floor(img.height * ratio)) : img.width);
 const fit = (img: ImageMetadata, ws?: number[]) => {
-  const list = (ws ?? [480, 768, 1080, 1440, 1920]).filter((w) => w <= img.width);
+  const max = reach(img);
+  const list = (ws ?? [480, 768, 1080, 1440, 1920]).filter((w) => w <= max);
   // Include the native width when it fits under the largest useful size.
-  if (!list.length || (list[list.length - 1] < img.width && img.width <= 2048)) list.push(img.width);
+  if (!list.length || (list[list.length - 1] < max && max <= 2048)) list.push(max);
   return list;
 };
 const list = fit(src, widths);
+
+const variant = (img: ImageMetadata, width: number, format: 'avif' | 'webp' | 'jpg') =>
+  getImage({ src: img, width, ...(ratio && { height: Math.round(width / ratio), fit: 'cover' as const }), format, quality });
+const srcsetOf = async (img: ImageMetadata, ws: number[], format: 'avif' | 'webp') =>
+  (await Promise.all(ws.map(async (w) => `${(await variant(img, w, format)).src} ${w}w`))).join(', ');
 
 const formats = ['avif', 'webp'] as const;
 const encode = (img: ImageMetadata, ws: number[], media: string | undefined, sz: string) =>
   Promise.all(formats.map(async (format) => ({
     media, sizes: sz, type: `image/${format}`,
-    srcset: (await getImage({ src: img, widths: ws, format, quality })).srcSet.attribute
+    srcset: await srcsetOf(img, ws, format)
   })));
 // 1×1 transparent GIF: matched first where `skip` applies.
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-const custom = !!(art || skip);
+const custom = !!(art || skip || ratio || defer);
 const sources = custom && [
   ...(skip ? [{ media: skip, sizes: undefined, type: undefined, srcset: BLANK }] : []),
   ...(art ? await encode(art.src, fit(art.src, art.widths), art.media, art.sizes) : []),
   ...(await encode(src, list, undefined, sizes))
 ];
-const fallback = custom && (await getImage({ src, width: list[list.length - 1], format: 'jpg', quality }));
-const loading = priority ? 'eager' : 'lazy';
+const fallback = custom && (await variant(src, list[list.length - 1], 'jpg'));
+// With a crop the intrinsic size is the cropped one (the aspect ratio the browser reserves).
+const dims = ratio && fallback ? fallback.attributes : { width: src.width, height: src.height };
+const loading = priority || defer ? 'eager' : 'lazy';
 const decoding = priority ? 'sync' : 'async';
 const fetchpriority = priority ? 'high' : 'auto';
 ---
 
 {sources && fallback ? (
   <picture>
-    {sources.map((s) => <source media={s.media} type={s.type} srcset={s.srcset} sizes={s.sizes} />)}
+    {sources.map((s) => (
+      defer && s.type
+        ? <source media={s.media} type={s.type} data-srcset={s.srcset} sizes={s.sizes} />
+        : <source media={s.media} type={s.type} srcset={s.srcset} sizes={s.sizes} />
+    ))}
     <img
-      src={fallback.src}
-      width={src.width}
-      height={src.height}
+      src={defer ? undefined : fallback.src}
+      data-src={defer ? fallback.src : undefined}
+      data-defer={defer ? '' : undefined}
+      width={dims.width}
+      height={dims.height}
       alt={alt}
       loading={loading}
       decoding={decoding}
