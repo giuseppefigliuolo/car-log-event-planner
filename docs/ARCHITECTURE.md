@@ -56,7 +56,7 @@ and a CSS animation hides the overlay at 6.5 s if JS never ran.
 | `data-magnet` | contact CTA | pulled toward the pointer when near |
 | `data-deck` / `data-card` | mobile hero pile | Polaroids sized from the deck's box; tap/swipe/"Sfoglia" throw the front card, autoplay every 3.2 s (`features/deck.ts`) |
 | `data-deck-ctrl`, `data-deck-count`, `data-deck-next` | under the pile | row as wide as a card, "01 / 06" counter, "Sfoglia" button |
-| `data-hdr`, `data-fab`, `data-menu*` | chrome | header hide/frost, mobile WhatsApp button, menu; `data-logo="on/off"` on the header hides the logo over the mobile hero |
+| `data-hdr`, `data-fab`, `data-menu*` | chrome | header hide/glass (tinted with the page colour), mobile WhatsApp button, menu; `data-logo="on/off"` on the header hides the logo over the mobile hero |
 
 ## 4. Animation loop
 
