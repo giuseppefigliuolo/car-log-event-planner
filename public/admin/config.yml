@@ -162,6 +162,7 @@ collections:
       - { label: Luogo, name: place, widget: string, required: false }
       - { label: 'Ordine (numero più basso = prima)', name: order, widget: number, value_type: int, default: 0 }
       - { label: Pubblicata, name: published, widget: boolean, default: false, hint: 'Se spenta, la recensione non compare sul sito.' }
+      - { label: Di esempio, name: mock, widget: boolean, default: false, required: false, hint: 'Testo di prova: si vede solo sul sito di collaudo, mai in produzione.' }
 
   - name: impostazioni
     label: Impostazioni

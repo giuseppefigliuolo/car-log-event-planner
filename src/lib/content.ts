@@ -12,11 +12,15 @@ export async function getSettings() {
   return entry.data;
 }
 
-/** Published reviews, in the CMS order. Empty until Carmen adds real ones (the section then isn't rendered). */
+/**
+ * Published reviews, in the CMS order (none → the section isn't rendered). Example reviews (`mock: true`) show on
+ * collaudo / preview builds only: the production build (INDEXABLE=true) leaves them out.
+ */
 export async function getReviews() {
+  const production = process.env.INDEXABLE === 'true';
   const all = await getCollection('reviews');
   return all
-    .filter((r) => r.data.published)
+    .filter((r) => r.data.published && !(production && r.data.mock))
     .sort((a, b) => a.data.order - b.data.order || a.id.localeCompare(b.id))
     .map((r) => r.data);
 }

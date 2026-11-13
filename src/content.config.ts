@@ -140,7 +140,9 @@ const reviews = defineCollection({
     /** Ascending; ties keep the file order. */
     order: z.number().int().optional().default(0),
     /** Off by default: an incomplete entry never reaches the page. */
-    published: z.boolean().optional().default(false)
+    published: z.boolean().optional().default(false),
+    /** Example text, not a real review: shown on collaudo builds, never in production (lib/content getReviews). */
+    mock: z.boolean().optional().default(false)
   })
 });
 

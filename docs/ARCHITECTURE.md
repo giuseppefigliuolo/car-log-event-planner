@@ -72,7 +72,7 @@ The deck's autoplay is a subscriber too (no timers); its card sizes follow the d
 
 ## 5. Content model
 
-`src/content.config.ts` validates `pages/home.json`, `settings/site.json` and the `reviews` collection (one JSON per review in `src/content/reviews/`; `published: false` by default; no published review → the Recensioni section isn't rendered). Reviews carry no schema.org markup on purpose: Google ignores a business's reviews of itself. (Zod + `image()`).
+`src/content.config.ts` validates `pages/home.json`, `settings/site.json` and the `reviews` collection (one JSON per review in `src/content/reviews/`; `published: false` by default; no published review → the Recensioni section isn't rendered; `mock: true` marks example texts, shown on collaudo builds and left out when `INDEXABLE=true`). Reviews carry no schema.org markup on purpose: Google ignores a business's reviews of itself. (Zod + `image()`).
 `public/admin/config.yml` mirrors it for Decap. All WhatsApp links go through `lib/contact.ts →
 whatsappHref()` (number + prefilled message from settings).
 
