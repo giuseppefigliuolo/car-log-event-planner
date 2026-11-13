@@ -2,7 +2,7 @@
  * Entry point.
  *  1. always: anchors + smooth scroll, menu, fitted titles, header/background/WhatsApp-button chrome,
  *     the mobile hero's deck (drag, "Sfoglia")
- *  2. motion only: intro → hero entrance (+ the deck flying in, then its autoplay), reveals,
+ *  2. motion only: intro → hero entrance (+ the deck flying in, then its autoplay), reveals, the 300+ counter,
  *     parallax/words/stack, marquee, cursor bubble
  * Without JS or with reduced motion every section is a static, fully readable layout.
  */
@@ -11,6 +11,7 @@ import { start } from './core/loop';
 import { initDefer } from './core/defer';
 import { initSmooth } from './core/smooth';
 import { initChrome } from './features/chrome';
+import { initCount } from './features/count';
 import { initCursor } from './features/cursor';
 import { initDeck } from './features/deck';
 import { initFit } from './features/fit';
@@ -36,6 +37,7 @@ if (motion) {
     deck?.enter(delay);
   });
   initReveal(intro.done);
+  initCount();
   initScrollFx();
   initMarquee();
   if (fine()) initCursor();

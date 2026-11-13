@@ -1,5 +1,5 @@
 ---
-/** Chi sono: two overlapping photos (parallax at opposite speeds), intro, the 300+ figure. */
+/** Chi sono: two overlapping photos (parallax at opposite speeds), intro, the 300+ figure (counts up on first view). */
 import type { Home, Settings } from '../../lib/content';
 import Img from '../ui/Img.astro';
 import Lines from '../ui/Lines.astro';
@@ -26,8 +26,10 @@ const a = home.about;
       <h2 id="about-t" class="display" data-rm><Lines lines={a.title} /></h2>
       {a.body.map((p) => <p class="body-copy" data-r>{p}</p>)}
       <div class="stat" data-r>
-        <span class="num display">{s.eventsCount}<em>+</em></span>
-        <span class="kicker">{a.statLabel}</span>
+        <!-- The figure counts up from 0 once (features/count.ts): hidden from screen readers while it changes. -->
+        <span class="num display" aria-hidden="true"><span class="n" data-count={s.eventsCount}>{s.eventsCount}</span><em>+</em></span>
+        <span class="kicker" aria-hidden="true">{a.statLabel}</span>
+        <span class="sr-only">{s.eventsCount}+ {a.statLabel}</span>
       </div>
     </div>
   </div>
@@ -48,5 +50,7 @@ const a = home.about;
   h2 { font-size: clamp(50px, 7vw, 108px); line-height: 0.98; letter-spacing: -0.035em; }
   .stat { display: flex; align-items: baseline; gap: 16px; padding-top: 18px; border-top: 1px solid rgba(42, 34, 33, 0.18); }
   .num { font-size: clamp(52px, 6vw, 80px); line-height: 1; letter-spacing: -0.03em; }
+  /* Fixed width: the figure doesn't push the "+" around while it counts. */
+  .n { display: inline-block; min-width: 1.62em; }
   .stat .kicker { font-size: 12px; letter-spacing: 0.18em; }
 </style>

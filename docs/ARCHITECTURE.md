@@ -49,6 +49,7 @@ and a CSS animation hides the overlay at 6.5 s if JS never ran.
 | `data-px` (`data-ps`, `data-px-wide`, `data-ps-wide`) | image or wrapper | parallax relative to its parent; with a scale the offset is clamped to the spare room |
 | `data-fit` (`="m"`: only < 900px) | the giant names | font-size fitted to the parent's content width (iterated: Bodoni's opsz axis makes width non-linear in size); the hero's parent is the centred name block |
 | `data-words` / `data-wd` | manifesto | words get `.on` as the paragraph scrolls (82% → top) |
+| `data-count="300"` | the figure in Chi sono | server renders 300; if still below the fold at load it is set to 0 and counts up once (1.8 s) when its top passes 88% of the viewport (`features/count.ts`). Hidden from screen readers; a visually hidden "300+ eventi realizzati" stands in |
 | `data-sc` / `data-dim` | story slots | covered card scales to 0.93 and dims by 25% |
 | `data-bg="#hex"` | sections | page background blends to it when the section crosses 55% of the viewport |
 | `data-marquee` | services band | drifts left, faster with scroll velocity |
