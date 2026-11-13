@@ -1,0 +1,163 @@
+# Decap CMS — ready, not yet active.
+# Local editing (no account needed):  npm run cms  +  npm run dev  → http://localhost:4321/admin/
+# Online editing needs a GitHub OAuth proxy (GitHub Pages can't run one): deploy one
+# (e.g. decap-proxy on Cloudflare Workers) and set `base_url` below to it. See README.
+backend:
+  name: github
+  repo: giuseppefigliuolo/carmen-log-site # TODO: the real repo once it exists
+  branch: main
+  # base_url: https://<oauth-proxy>  # TODO: set when the OAuth proxy exists
+  commit_messages:
+    update: 'Contenuti: aggiorna {{collection}} “{{slug}}”'
+    uploadMedia: 'Media: carica “{{path}}”'
+
+local_backend: true
+locale: it
+site_url: https://giuseppefigliuolo.github.io/carmen-log-site/
+display_url: https://giuseppefigliuolo.github.io/carmen-log-site/
+
+# Images are optimized at build time (AVIF/WebP, responsive sizes) — upload originals.
+media_folder: src/assets/images
+public_folder: ../../assets/images
+
+collections:
+  - name: pagine
+    label: Pagine
+    editor: { preview: false }
+    files:
+      - name: home
+        label: Home
+        file: src/content/pages/home.json
+        fields:
+          - label: SEO
+            name: seo
+            widget: object
+            fields:
+              - { label: Titolo (max 70), name: title, widget: string }
+              - { label: Descrizione (max 170), name: description, widget: text }
+              - { label: Immagine social (verrà ritagliata 1200×630), name: ogImage, widget: image }
+          - label: Intro (prima visita)
+            name: intro
+            widget: object
+            fields:
+              - label: Foto in sequenza (2–8)
+                name: frames
+                widget: list
+                min: 2
+                max: 8
+                summary: '{{fields.label}}'
+                fields:
+                  - { label: Foto, name: image, widget: image }
+                  - { label: Categoria mostrata, name: label, widget: string }
+          - label: Hero
+            name: hero
+            widget: object
+            fields:
+              - { label: Occhiello, name: kicker, widget: string }
+              - { label: Riga in alto a destra (desktop), name: meta, widget: string }
+              - { label: Frase, name: lead, widget: string }
+              - { label: Seconda frase (solo desktop), name: leadDesktop, widget: string }
+              - { label: Testo pulsante WhatsApp, name: cta, widget: string }
+              - { label: Testo pulsante WhatsApp (mobile), name: ctaShort, widget: string }
+              - { label: Invito a scorrere, name: scroll, widget: string }
+              - { label: Foto (verticale), name: image, widget: object, collapsed: true, fields: [{ label: Immagine, name: src, widget: image }, { label: Testo alternativo (SEO/accessibilità), name: alt, widget: string }] }
+          - { label: Eventi (fascia scorrevole), name: services, widget: list, field: { label: Evento, name: service, widget: string } }
+          - label: Il mio lavoro
+            name: manifesto
+            widget: object
+            fields:
+              - { label: Occhiello, name: kicker, widget: string }
+              - { label: Testo, name: text, widget: text, hint: '*parola* = corsivo.' }
+              - { label: Firma, name: signature, widget: string }
+          - label: Chi sono
+            name: about
+            widget: object
+            fields:
+              - { label: Occhiello, name: kicker, widget: string }
+              - { label: Titolo, name: title, widget: list, hint: 'Una riga per voce. *parola* = corsivo rosa.', field: { label: Riga, name: line, widget: string } }
+              - { label: Paragrafi, name: body, widget: list, field: { label: Paragrafo, name: p, widget: text } }
+              - { label: Didascalia del numero di eventi, name: statLabel, widget: string }
+              - { label: Foto principale, name: image, widget: object, collapsed: true, fields: [{ label: Immagine, name: src, widget: image }, { label: Testo alternativo (SEO/accessibilità), name: alt, widget: string }] }
+              - { label: Foto piccola, name: detail, widget: object, collapsed: true, fields: [{ label: Immagine, name: src, widget: image }, { label: Testo alternativo (SEO/accessibilità), name: alt, widget: string }] }
+          - label: Storie
+            name: stories
+            widget: object
+            fields:
+              - { label: Occhiello, name: kicker, widget: string }
+              - { label: Titolo, name: title, widget: string, hint: '*parola* = corsivo rosa.' }
+              - label: Storie
+                name: items
+                widget: list
+                min: 1
+                summary: '{{fields.title}} — {{fields.type}}'
+                fields:
+                  - { label: Titolo (nomi / occasione), name: title, widget: string }
+                  - { label: Tipo di evento, name: type, widget: string }
+                  - { label: Luogo, name: place, widget: string, required: false }
+                  - { label: Testo, name: text, widget: text }
+                  - { label: Foto, name: image, widget: object, collapsed: true, fields: [{ label: Immagine, name: src, widget: image }, { label: Testo alternativo (SEO/accessibilità), name: alt, widget: string }] }
+          - label: Instagram
+            name: instagram
+            widget: object
+            fields:
+              - { label: Occhiello, name: kicker, widget: string }
+              - { label: Titolo, name: title, widget: list, hint: 'Una riga per voce. *parola* = corsivo rosa.', field: { label: Riga, name: line, widget: string } }
+              - label: Foto (12 su desktop, le prime 9 su mobile)
+                name: feed
+                widget: list
+                min: 9
+                summary: '{{fields.alt}}'
+                fields:
+                  - { label: Immagine, name: src, widget: image }
+                  - { label: Testo alternativo (SEO/accessibilità), name: alt, widget: string }
+          - label: Contatti
+            name: contact
+            widget: object
+            fields:
+              - { label: Occhiello, name: kicker, widget: string }
+              - { label: Titolo, name: title, widget: string, hint: '*parola* = corsivo rosa.' }
+              - { label: Testo, name: body, widget: text }
+              - { label: Testo pulsante, name: cta, widget: string }
+              - label: Colonne di foto (3)
+                name: columns
+                widget: list
+                min: 3
+                max: 3
+                field: { label: Colonna, name: column, widget: list, min: 2, field: { label: Foto, name: img, widget: image } }
+
+  - name: impostazioni
+    label: Impostazioni
+    editor: { preview: false }
+    files:
+      - name: site
+        label: Dati & contatti
+        file: src/content/settings/site.json
+        fields:
+          - { label: Marchio, name: brand, widget: string }
+          - { label: Payoff, name: tagline, widget: string }
+          - { label: Nome, name: founder, widget: string }
+          - { label: Numero di eventi realizzati, name: eventsCount, widget: number, value_type: int }
+          - label: WhatsApp
+            name: whatsapp
+            widget: object
+            fields:
+              - { label: 'Numero (formato internazionale, es. +39 333 1234567)', name: number, widget: string }
+              - { label: Messaggio precompilato, name: message, widget: string }
+          - { label: Email, name: email, widget: string, required: false }
+          - { label: Sito web, name: website, widget: string }
+          - { label: Instagram (URL), name: instagram, widget: string }
+          - { label: Instagram (handle), name: instagramHandle, widget: string }
+          - label: Zona
+            name: area
+            widget: object
+            fields:
+              - { label: Comune (facoltativo), name: locality, widget: string, required: false }
+              - { label: Provincia (sigla), name: province, widget: string }
+              - { label: Regione, name: region, widget: string }
+              - { label: Paese (ISO, es. IT), name: country, widget: string }
+          - { label: Partita IVA, name: vatNumber, widget: string, required: false }
+          - label: Intro animata
+            name: intro
+            widget: object
+            fields:
+              - { label: Attiva, name: enabled, widget: boolean }

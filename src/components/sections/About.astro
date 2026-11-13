@@ -1,0 +1,52 @@
+---
+/** Chi sono: two overlapping photos (parallax at opposite speeds), intro, the 300+ figure. */
+import type { Home, Settings } from '../../lib/content';
+import Img from '../ui/Img.astro';
+import Lines from '../ui/Lines.astro';
+
+interface Props { home: Home; settings: Settings }
+const { home, settings: s } = Astro.props;
+const a = home.about;
+---
+
+<section id="chi-sono" class="about" data-bg="#F2E4E0" aria-labelledby="about-t">
+  <div class="wrap">
+    <div class="pics">
+      <div class="media main" data-r data-cursor={s.founder}>
+        <Img src={a.image.src} alt={a.image.alt} class="cover" sizes="(min-width: 900px) 430px, 72vw" widths={[480, 768, 1080]} data-px="0.08" data-ps="1.2" />
+      </div>
+      <div class="detail" data-px="-0.12">
+        <div class="media" data-r style="--d:120ms">
+          <Img src={a.detail.src} alt={a.detail.alt} class="cover" sizes="(min-width: 900px) 300px, 50vw" widths={[320, 480, 768]} />
+        </div>
+      </div>
+    </div>
+    <div class="text">
+      <span class="kicker" data-r>{a.kicker}</span>
+      <h2 id="about-t" class="display" data-rm><Lines lines={a.title} /></h2>
+      {a.body.map((p) => <p class="body-copy" data-r>{p}</p>)}
+      <div class="stat" data-r>
+        <span class="num display">{s.eventsCount}<em>+</em></span>
+        <span class="kicker">{a.statLabel}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about { padding: clamp(110px, 13vw, 200px) var(--gutter); }
+  .wrap {
+    max-width: 1280px; margin: 0 auto;
+    display: flex; flex-wrap: wrap; align-items: center; gap: clamp(56px, 7vw, 112px);
+  }
+  .pics { position: relative; flex: 1 1 min(100%, 420px); max-width: 600px; aspect-ratio: 5 / 6; }
+  .main { position: absolute; left: 0; top: 0; width: 72%; aspect-ratio: 4 / 5; }
+  .main :global(img) { object-position: 35% 50%; }
+  .detail { position: absolute; right: 0; bottom: 0; width: 50%; aspect-ratio: 3 / 4; }
+  .detail .media { position: absolute; inset: 0; outline: 8px solid var(--blush); }
+  .text { flex: 1 1 min(100%, 400px); max-width: 520px; display: flex; flex-direction: column; gap: 26px; }
+  h2 { font-size: clamp(50px, 7vw, 108px); line-height: 0.98; letter-spacing: -0.035em; }
+  .stat { display: flex; align-items: baseline; gap: 16px; padding-top: 18px; border-top: 1px solid rgba(42, 34, 33, 0.18); }
+  .num { font-size: clamp(52px, 6vw, 80px); line-height: 1; letter-spacing: -0.03em; }
+  .stat .kicker { font-size: 12px; letter-spacing: 0.18em; }
+</style>

@@ -1,0 +1,29 @@
+---
+/** Mobile only: floating WhatsApp button, shown after the hero and hidden over the contact section. */
+import type { Settings } from '../lib/content';
+import { whatsappHref } from '../lib/contact';
+
+interface Props { settings: Settings }
+const { settings: s } = Astro.props;
+---
+
+<a class="fab" data-fab href={whatsappHref(s)} target="_blank" rel="noopener" aria-label="Scrivimi su WhatsApp">
+  <span class="dot" aria-hidden="true"></span>Scrivimi
+</a>
+
+<style>
+  .fab {
+    position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 50;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 20px; border-radius: 999px;
+    background: var(--fg); color: var(--cream);
+    font-size: 13px; letter-spacing: 0.02em; white-space: nowrap;
+    box-shadow: 0 10px 30px rgba(42, 34, 33, 0.18);
+    opacity: 0; transform: translateY(20px); pointer-events: none; visibility: hidden;
+    transition: opacity 0.5s, transform 0.7s var(--ease), visibility 0.5s, background-color 0.4s;
+  }
+  .fab:global(.is-on) { opacity: 1; transform: none; pointer-events: auto; visibility: visible; }
+  @media (hover: hover) { .fab:hover { background: var(--accent); color: var(--cream); } }
+  .dot { display: block; width: 7px; height: 7px; border-radius: 50%; background: #7bc47f; }
+  @media (min-width: 900px) { .fab { display: none; } }
+</style>

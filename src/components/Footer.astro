@@ -1,0 +1,48 @@
+---
+import type { Settings } from '../lib/content';
+import { areaLabel, whatsappHref } from '../lib/contact';
+import { sections } from '../lib/nav';
+
+interface Props { settings: Settings }
+const { settings: s } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="ftr">
+  <div class="row">
+    <nav class="links" aria-label="Sezioni (piè di pagina)">
+      {sections.slice(0, 3).map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
+    </nav>
+    <div class="links">
+      <a href={whatsappHref(s)} target="_blank" rel="noopener">WhatsApp <span aria-hidden="true">↗</span></a>
+      <a href={s.instagram} target="_blank" rel="noopener">Instagram <span aria-hidden="true">↗</span></a>
+      <a href="#top">Su <span aria-hidden="true">↑</span></a>
+    </div>
+  </div>
+  <div class="big" data-rm aria-hidden="true">
+    <div class="fit display" data-fit><span data-rl>{s.brand}</span></div>
+  </div>
+  <div class="legal">
+    <span>© {year} {s.brand} · {s.tagline}{s.vatNumber && ` · P.IVA ${s.vatNumber}`}</span>
+    <span>{areaLabel(s)}</span>
+  </div>
+</footer>
+
+<style>
+  .ftr {
+    display: flex; flex-direction: column; gap: clamp(44px, 6vw, 88px);
+    padding: clamp(56px, 7vw, 96px) var(--gutter) calc(26px + env(safe-area-inset-bottom));
+  }
+  .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; font-size: 14px; }
+  .links { display: flex; flex-wrap: wrap; gap: 12px 28px; }
+  .big { overflow: hidden; }
+  .fit {
+    width: max-content; white-space: nowrap; overflow: hidden;
+    padding: 0 0.04em 0.24em 0;
+    margin-bottom: -0.18em; /* room for the g's descender inside the mask, without the extra gap */
+    font-style: italic; line-height: 0.9; letter-spacing: -0.045em;
+    font-size: calc((100vw - 2 * clamp(20px, 4vw, 48px)) * 0.201);
+  }
+  .fit span { display: block; }
+  .legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); }
+</style>

@@ -1,0 +1,121 @@
+{
+  "seo": {
+    "title": "Carmen Log · Wedding & Event Planner in Basilicata",
+    "description": "Matrimoni, battesimi, compleanni ed eventi privati in Basilicata. Oltre 300 eventi curati con stile ed armonia in ogni dettaglio. Scrivi a Carmen su WhatsApp.",
+    "ogImage": "../../assets/images/carmen-tavolo.jpg"
+  },
+  "intro": {
+    "frames": [
+      { "image": "../../assets/images/sposi-fumogeni.jpg", "label": "Matrimoni" },
+      { "image": "../../assets/images/battesimo-lilla.jpg", "label": "Battesimi" },
+      { "image": "../../assets/images/nove-anni.jpg", "label": "Compleanni" },
+      { "image": "../../assets/images/one-arcobaleno.jpg", "label": "Primo compleanno" },
+      { "image": "../../assets/images/diciotto.jpg", "label": "18 anni" },
+      { "image": "../../assets/images/torta-bianca.jpg", "label": "Eventi" }
+    ]
+  },
+  "hero": {
+    "kicker": "Event Planner",
+    "meta": "Basilicata (PZ) · Oltre 300 eventi",
+    "lead": "Realizzo matrimoni ed eventi che raccontano la tua storia.",
+    "leadDesktop": "Cura, stile ed armonia in ogni dettaglio.",
+    "cta": "Scrivimi su WhatsApp",
+    "ctaShort": "WhatsApp",
+    "scroll": "Scorri",
+    "image": { "src": "../../assets/images/velo.jpg", "alt": "Carmen sistema il velo della sposa all'uscita della chiesa" }
+  },
+  "services": ["Matrimoni", "Battesimi", "Compleanni", "Primo compleanno", "18 anni", "Segnaposti", "Eventi privati"],
+  "manifesto": {
+    "kicker": "Il mio lavoro",
+    "text": "Il mio lavoro è proprio questo: *trasformare* un desiderio in un'esperienza, un progetto in *emozione,* un giorno speciale in un ricordo *indimenticabile.*",
+    "signature": "Carmen"
+  },
+  "about": {
+    "kicker": "Chi sono",
+    "title": ["Ciao, sono", "*Carmen.*"],
+    "body": [
+      "Event planner in Basilicata. Realizzo matrimoni ed eventi che raccontano la tua storia, con cura, stile ed armonia in ogni dettaglio.",
+      "Il mio lavoro non è soltanto curare i dettagli e assicurarmi che tutto sia perfetto. È anche esserci, tranquillizzarti, farti sentire che non sei sola e accompagnarti verso quel momento con un sorriso."
+    ],
+    "statLabel": "eventi realizzati",
+    "image": { "src": "../../assets/images/carmen-tavolo.jpg", "alt": "Carmen allestisce il tavolo della torta per un battesimo" },
+    "detail": { "src": "../../assets/images/velo.jpg", "alt": "Carmen sistema il velo della sposa" }
+  },
+  "stories": {
+    "kicker": "Storie",
+    "title": "Ogni festa, *una storia*",
+    "items": [
+      {
+        "title": "Rocco & Francesca",
+        "type": "Matrimonio",
+        "place": "Villa Orsoleo",
+        "text": "Una palette invernale e romantica: rose cappuccino e la luce soffusa delle candele.",
+        "image": { "src": "../../assets/images/torta-rf.jpg", "alt": "Torta nuziale con le iniziali R e F, rose cappuccino e candele" }
+      },
+      {
+        "title": "Pierpaola & Pierluigi",
+        "type": "Matrimonio",
+        "place": "Roseto Capo Spulico",
+        "text": "Il rosa cipria, i fiori, le linee delicate e quei particolari capaci di fare la differenza.",
+        "image": { "src": "../../assets/images/paggetti.jpg", "alt": "Paggetti e damigelle in rosa cipria con i cartelli per gli sposi" }
+      },
+      {
+        "title": "Maria Sole",
+        "type": "Battesimo e primo compleanno",
+        "place": "",
+        "text": "Il sole che sorride, le farfalle, le sfumature cipria. Un nome che è già un tema.",
+        "image": { "src": "../../assets/images/maria-sole.jpg", "alt": "Allestimento con sole, farfalle e torta per Maria Sole" }
+      },
+      {
+        "title": "Giuseppe",
+        "type": "Battesimo",
+        "place": "",
+        "text": "Un piccolo pilota: un tema ispirato al mondo dell'aviazione, nei toni del bianco e dell'azzurro.",
+        "image": { "src": "../../assets/images/giuseppe.jpg", "alt": "Giuseppe gattona davanti alla torta a tema aviatore" }
+      },
+      {
+        "title": "Martina & Riccardo",
+        "type": "Primo compleanno",
+        "place": "Agriturismo Macchia di Riso",
+        "text": "Un piccolo giardino incantato, fatto di fiori, coniglietti e dolcezza.",
+        "image": { "src": "../../assets/images/martina-riccardo.jpg", "alt": "Martina e Riccardo seduti tra margherite giganti" }
+      },
+      {
+        "title": "18 anni",
+        "type": "Compleanno",
+        "place": "",
+        "text": "L'inizio di un nuovo capitolo, quello dei sogni da inseguire.",
+        "image": { "src": "../../assets/images/diciotto.jpg", "alt": "Festeggiata di spalle davanti alla scritta luminosa 18" }
+      }
+    ]
+  },
+  "instagram": {
+    "kicker": "Instagram",
+    "title": ["Dietro", "*ogni dettaglio*"],
+    "feed": [
+      { "src": "../../assets/images/torta-bianca.jpg", "alt": "Torta nuziale bianca a cinque piani" },
+      { "src": "../../assets/images/carmen-tavolo.jpg", "alt": "Carmen al lavoro su un allestimento" },
+      { "src": "../../assets/images/one-arcobaleno.jpg", "alt": "Biscotti arcobaleno per un primo compleanno" },
+      { "src": "../../assets/images/sposi-fumogeni.jpg", "alt": "Sposi tra i fumogeni colorati" },
+      { "src": "../../assets/images/battesimo-lilla.jpg", "alt": "Torta di battesimo nei toni del lilla" },
+      { "src": "../../assets/images/biscotto-ortensie.jpg", "alt": "Biscotto decorato con ortensie rosa" },
+      { "src": "../../assets/images/vera.jpg", "alt": "Allestimento bianco e lilla per Vera" },
+      { "src": "../../assets/images/camino.jpg", "alt": "Tavola imbandita davanti al camino" },
+      { "src": "../../assets/images/scatola-giuseppe.jpg", "alt": "Scatola ricordo per il battesimo di Giuseppe" },
+      { "src": "../../assets/images/nove-anni.jpg", "alt": "Festa rosa per i nove anni" },
+      { "src": "../../assets/images/giuseppe-dettagli.jpg", "alt": "Dettagli a tema aviatore con orsetto" },
+      { "src": "../../assets/images/abito-rosa.jpg", "alt": "Carmen in abito rosa nella sala allestita" }
+    ]
+  },
+  "contact": {
+    "kicker": "Contatti",
+    "title": "Parliamo del *tuo evento*",
+    "body": "Scrivimi su WhatsApp: ti rispondo personalmente.",
+    "cta": "Scrivimi su WhatsApp",
+    "columns": [
+      ["../../assets/images/torta-bianca.jpg", "../../assets/images/paggetti.jpg", "../../assets/images/vera.jpg", "../../assets/images/camino.jpg"],
+      ["../../assets/images/sposi-fumogeni.jpg", "../../assets/images/maria-sole.jpg", "../../assets/images/battesimo-lilla.jpg", "../../assets/images/biscotto-ortensie.jpg"],
+      ["../../assets/images/martina-riccardo.jpg", "../../assets/images/torta-rf.jpg", "../../assets/images/giuseppe.jpg", "../../assets/images/one-arcobaleno.jpg"]
+    ]
+  }
+}

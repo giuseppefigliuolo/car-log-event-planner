@@ -1,0 +1,48 @@
+---
+/** Instagram: square grid of recent work (6 columns, 12 photos; 3 columns, 9 photos on mobile). */
+import type { Home, Settings } from '../../lib/content';
+import Img from '../ui/Img.astro';
+import Lines from '../ui/Lines.astro';
+
+interface Props { home: Home; settings: Settings }
+const { home, settings: s } = Astro.props;
+const ig = home.instagram;
+---
+
+<section id="instagram" class="ig" data-bg="#EFE7DA" aria-labelledby="ig-t">
+  <div class="wrap">
+    <div class="head">
+      <div class="title">
+        <span class="kicker" data-r>{ig.kicker}</span>
+        <h2 id="ig-t" class="display" data-rm><Lines lines={ig.title} /></h2>
+      </div>
+      <a class="btn btn-line sm" data-r href={s.instagram} target="_blank" rel="noopener">{s.instagramHandle} <span aria-hidden="true">↗</span></a>
+    </div>
+    <ul class="grid">
+      {ig.feed.slice(0, 12).map((g) => (
+        <li data-r>
+          <a class="media tile" data-cursor="Apri" href={s.instagram} target="_blank" rel="noopener">
+            <Img src={g.src} alt={g.alt} class="cover" sizes="(min-width: 900px) 16vw, 33vw" widths={[240, 360, 480, 640]} />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .ig { padding: var(--sp-section) var(--gutter); }
+  .wrap { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(36px, 5vw, 64px); }
+  .head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  .title { display: flex; flex-direction: column; gap: 14px; }
+  h2 { font-size: clamp(44px, 7.4vw, 116px); line-height: 0.95; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(4px, 0.6vw, 10px); }
+  .grid li:nth-child(n + 10) { display: none; }
+  .tile { display: block; aspect-ratio: 1 / 1; }
+  .tile :global(img) { transition: transform 1.2s var(--ease); }
+  @media (hover: hover) { .tile:hover :global(img) { transform: scale(1.07); } }
+  @media (min-width: 900px) {
+    .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .grid li:nth-child(n + 10) { display: block; }
+  }
+</style>

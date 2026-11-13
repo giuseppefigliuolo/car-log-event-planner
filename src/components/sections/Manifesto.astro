@@ -1,0 +1,31 @@
+---
+/** "Il mio lavoro": the words fill in, one by one, as the paragraph scrolls through the screen. */
+import type { Home } from '../../lib/content';
+
+interface Props { home: Home }
+const { home } = Astro.props;
+const m = home.manifesto;
+// *parola* = italic. Each word keeps its trailing space so the text reads normally without CSS.
+const words = m.text.split(/\s+/).map((w) => ({ t: w.replace(/\*/g, ''), it: /^\*/.test(w) || /\*[.,;:!?]*$/.test(w) }));
+---
+
+<section class="manifesto" aria-labelledby="manifesto-k">
+  <div class="wrap">
+    <h2 id="manifesto-k" class="kicker" data-r>{m.kicker}</h2>
+    <p class="words display" data-words>
+      {words.map((w) => <><span data-wd class:list={{ it: w.it }}>{w.t}</span>{' '}</>)}
+    </p>
+    <span class="sign" data-r>{m.signature}</span>
+  </div>
+</section>
+
+<style>
+  .manifesto { padding: clamp(130px, 18vw, 250px) var(--gutter); }
+  .wrap { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(32px, 4vw, 56px); }
+  .kicker { font-weight: 400; }
+  .words { font-size: clamp(32px, 5.4vw, 84px); line-height: 1.12; letter-spacing: -0.02em; text-wrap: pretty; }
+  .it { font-style: italic; }
+  :global(.m) [data-wd] { color: var(--ghost); transition: color 0.4s; }
+  :global(.m) [data-wd]:global(.on) { color: var(--fg); }
+  .sign { align-self: flex-end; font: italic 400 clamp(28px, 3vw, 40px)/1.2 var(--display); color: var(--accent); }
+</style>

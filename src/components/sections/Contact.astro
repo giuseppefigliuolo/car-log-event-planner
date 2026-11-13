@@ -1,0 +1,63 @@
+---
+/**
+ * Contatti ("Galleria"): three columns of photos drifting at different speeds,
+ * a card in the middle that leads to WhatsApp.
+ */
+import type { Home, Settings } from '../../lib/content';
+import { whatsappHref } from '../../lib/contact';
+import { rich } from '../../lib/rich';
+import Img from '../ui/Img.astro';
+
+interface Props { home: Home; settings: Settings }
+const { home, settings: s } = Astro.props;
+const c = home.contact;
+// Each column's photos run twice: on tall/narrow screens one pass doesn't reach the bottom of the section
+// (same files, so no extra download). The section clips the rest.
+const COLS = [
+  { speed: '0.22', offset: '-30%' },
+  { speed: '-0.16', offset: '-12%' },
+  { speed: '0.32', offset: '-38%' }
+];
+---
+
+<section id="contatti" class="contact" aria-labelledby="contact-t">
+  <div class="cols" aria-hidden="true">
+    {c.columns.map((col, i) => (
+      <div class="col" data-px={COLS[i].speed} style={`margin-top:${COLS[i].offset}`}>
+        {[...col, ...col].map((src) => (
+          <div class="media tile"><Img src={src} alt="" class="cover" sizes="34vw" widths={[240, 360, 480, 640]} /></div>
+        ))}
+      </div>
+    ))}
+  </div>
+  <div class="veil" aria-hidden="true"></div>
+  <div class="center">
+    <div class="card" data-r>
+      <span class="kicker">{c.kicker}</span>
+      <h2 id="contact-t" class="display" set:html={rich(c.title)} />
+      <p>{c.body}</p>
+      <a class="btn cta" data-magnet href={whatsappHref(s)} target="_blank" rel="noopener">{c.cta} <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact { position: relative; height: clamp(700px, 125vh, 1150px); overflow: hidden; }
+  .cols {
+    position: absolute; inset: 0;
+    display: flex; gap: clamp(8px, 1.2vw, 18px); padding: 0 clamp(8px, 1.2vw, 18px);
+  }
+  .col { flex: 1; display: flex; flex-direction: column; gap: clamp(8px, 1.2vw, 18px); }
+  .tile { aspect-ratio: 3 / 4; flex: none; }
+  .veil { position: absolute; inset: 0; background: rgba(248, 244, 239, 0.28); }
+  .center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .card {
+    width: 100%; max-width: 540px;
+    display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center;
+    padding: clamp(32px, 5vw, 60px) clamp(24px, 4vw, 56px);
+    background: var(--bg);
+  }
+  h2 { font-size: clamp(42px, 6vw, 80px); line-height: 0.98; letter-spacing: -0.035em; }
+  p { max-width: 360px; color: var(--fg-2); text-wrap: pretty; }
+  .cta { padding: 17px 30px; }
+</style>

@@ -1,0 +1,12 @@
+---
+/** "Carmen *Log*": the brand with its last word in italic rose, as masked words for the slide-up. */
+interface Props { name: string; attr?: 'data-hl' | 'data-rl' | 'data-intro-w' }
+const { name, attr = 'data-hl' } = Astro.props;
+const words = name.trim().split(/\s+/);
+const last = words.pop()!;
+const first = words.join(' ');
+const a = (i: number) => ({ [attr]: '', style: `--i:${i}` });
+---
+
+{first && <span class="mask"><span {...a(0)}>{first}</span></span>}
+<span class="mask"><em {...a(first ? 1 : 0)}>{last}</em></span>

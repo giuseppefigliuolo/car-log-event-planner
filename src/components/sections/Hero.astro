@@ -1,0 +1,91 @@
+---
+/**
+ * Hero. <900px "Full-bleed": the veil photo fills the screen, the name runs edge to edge at the
+ * bottom (fitted by JS, [data-fit="m"]). ≥900px "Split": text column left, the vertical photo right,
+ * full height — the photo stays vertical instead of being stretched.
+ * Entrance: [data-hl] titles, [data-hf] texts, [data-hi] photo wipe (global.css, started by main.ts).
+ */
+import type { Home, Settings } from '../../lib/content';
+import { areaLabel, whatsappHref } from '../../lib/contact';
+import Img from '../ui/Img.astro';
+import Brand from '../ui/Brand.astro';
+
+interface Props { home: Home; settings: Settings }
+const { home, settings: s } = Astro.props;
+const h = home.hero;
+---
+
+<section class="hero" id="top" data-hero aria-labelledby="hero-title">
+  <div class="media hero-media" data-hi data-cursor="Guarda">
+    <Img
+      src={h.image.src} alt={h.image.alt} priority class="cover"
+      sizes="(min-width: 900px) 44vw, 100vw" widths={[480, 768, 1051]}
+      data-px="-0.18" data-ps="1.14" data-px-wide="-0.12" data-ps-wide="1.12"
+    />
+  </div>
+  <div class="shade" aria-hidden="true"></div>
+  <div class="body">
+    <div class="meta kicker" data-hf><span>{h.kicker}</span><span>{h.meta}</span></div>
+    <h1 id="hero-title" class="title display" data-fit="m">
+      <Brand name={s.brand} />
+      <span class="sr-only"> — {s.tagline} in {areaLabel(s)}</span>
+    </h1>
+    <div class="foot">
+      <p data-hf style="--i:1">{h.lead}<span class="wide"> {h.leadDesktop}</span></p>
+      <a class="btn sm narrow" data-hf style="--i:2" href={whatsappHref(s)} target="_blank" rel="noopener">
+        {h.ctaShort} <span aria-hidden="true">↗</span>
+      </a>
+      <span class="scroll kicker wide" data-hf style="--i:2" aria-hidden="true">{h.scroll} <span class="tick"></span></span>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ---------- <900px: Full-bleed ---------- */
+  .hero {
+    position: relative; height: 100svh; min-height: 600px; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .hero-media { position: absolute; inset: 0; }
+  .hero-media :global(img) { object-position: 50% 30%; }
+  .shade {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(to top, var(--bg) 0%, rgba(248, 244, 239, 0.9) 20%, rgba(248, 244, 239, 0) 52%),
+      /* keeps the header logo legible over the light veil */
+      linear-gradient(to bottom, rgba(248, 244, 239, 0.6) 0, rgba(248, 244, 239, 0) 120px);
+  }
+  .body {
+    position: relative; min-width: 0;
+    display: flex; flex-direction: column; gap: clamp(12px, 2vw, 24px);
+    padding: 0 clamp(16px, 3vw, 40px) clamp(18px, 3vw, 34px);
+  }
+  .meta, .wide { display: none; }
+  .foot { order: 1; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; }
+  .foot p { max-width: 300px; font-size: 15px; line-height: 1.55; color: var(--fg); text-wrap: pretty; }
+  .title {
+    order: 2; display: flex; gap: 0.18em; width: max-content; white-space: nowrap;
+    /* Close to the fitted size before JS measures (container width / text width at 1em). */
+    font-size: calc((100vw - 2 * clamp(16px, 3vw, 40px)) * 0.2);
+    line-height: 0.9;
+  }
+
+  /* ---------- ≥900px: Split ---------- */
+  @media (min-width: 900px) {
+    .hero { flex-direction: row; justify-content: flex-start; min-height: 660px; }
+    .hero-media { position: relative; inset: auto; order: 2; flex: 0 0 44%; }
+    .shade, .narrow { display: none; }
+    .body {
+      flex: 1 1 56%; justify-content: space-between; gap: 32px;
+      padding: 130px clamp(28px, 3.4vw, 56px) clamp(28px, 3vw, 48px);
+    }
+    .meta { display: flex; justify-content: space-between; gap: 16px; }
+    .wide { display: inline; }
+    .title { order: 0; display: block; width: auto; white-space: normal; font-size: min(12.6vw, 26vh); }
+    .title :global(.mask:nth-child(2)) { padding-left: 1.1em; }
+    .foot { order: 0; flex-wrap: nowrap; gap: 32px; }
+    .foot p { max-width: 380px; font-size: 17px; line-height: 1.6; color: var(--fg-2); }
+    .scroll { display: flex; align-items: center; gap: 10px; flex: none; }
+    .tick { display: block; width: 1px; height: 28px; background: var(--fg); }
+  }
+</style>

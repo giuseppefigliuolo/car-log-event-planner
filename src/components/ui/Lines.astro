@@ -1,0 +1,13 @@
+---
+/** Heading rendered as masked lines that slide up in sequence (inside a [data-rm] parent). */
+import { rich } from '../../lib/rich';
+
+interface Props { lines: string[] }
+const { lines } = Astro.props;
+---
+
+{lines.map((line, i) => (
+  <span class="mask">
+    <span data-rl style={i ? `--i:${i}` : undefined} set:html={rich(line)} />
+  </span>
+))}

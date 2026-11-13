@@ -1,0 +1,111 @@
+---
+/**
+ * <head> SEO/GEO block: meta, Open Graph, Twitter, canonical, hreflang and
+ * a schema.org JSON-LD graph (business + website + page) built from content.
+ */
+import { getImage } from 'astro:assets';
+import type { Home, Settings } from '../lib/content';
+import { plain } from '../lib/rich';
+import { rootUrl } from '../lib/url';
+import { whatsappHref } from '../lib/contact';
+
+interface Props {
+  home: Home;
+  settings: Settings;
+  indexable: boolean;
+  /** Title/description of the current page; the home's own when omitted. */
+  page?: { title: string; description: string };
+}
+
+const { home, settings: s, indexable, page = home.seo } = Astro.props;
+const site = Astro.site!;
+const root = rootUrl(site);
+const url = new URL(Astro.url.pathname, site).href;
+const og = await getImage({ src: home.seo.ogImage, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 78 });
+const ogUrl = new URL(og.src, site).href;
+const portrait = await getImage({ src: home.about.image.src, width: 800, format: 'jpg', quality: 75 });
+const phone = s.whatsapp.number.replace(/[^\d+]/g, '');
+
+const businessId = `${root}#business`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': ['ProfessionalService', 'LocalBusiness'],
+      '@id': businessId,
+      name: s.brand,
+      alternateName: [`${s.brand} ${s.tagline}`, `${s.brand} Wedding Planner`],
+      description: home.seo.description,
+      slogan: plain(home.hero.lead),
+      url: root,
+      image: [ogUrl, new URL(portrait.src, site).href],
+      ...(phone ? { telephone: phone } : {}),
+      ...(s.email ? { email: s.email } : {}),
+      ...(s.vatNumber ? { vatID: s.vatNumber } : {}),
+      founder: { '@type': 'Person', name: s.founder, jobTitle: s.tagline },
+      address: {
+        '@type': 'PostalAddress',
+        ...(s.area.locality ? { addressLocality: s.area.locality } : {}),
+        addressRegion: s.area.region,
+        addressCountry: s.area.country
+      },
+      areaServed: [{ '@type': 'State', name: s.area.region }, { '@type': 'Country', name: 'Italia' }],
+      knowsAbout: ['Wedding planning', 'Event planning', 'Allestimenti per eventi', 'Matrimoni', 'Battesimi', 'Feste di compleanno', 'Sweet table', 'Segnaposti'],
+      makesOffer: home.services.map((name) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: `Organizzazione e allestimento: ${name.toLowerCase()}`, areaServed: s.area.region }
+      })),
+      sameAs: [s.instagram],
+      ...(phone
+        ? { contactPoint: { '@type': 'ContactPoint', telephone: phone, url: whatsappHref(s), contactType: 'customer service', availableLanguage: ['Italian'] } }
+        : {})
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${root}#website`,
+      url: root,
+      name: s.brand,
+      inLanguage: 'it-IT',
+      publisher: { '@id': businessId }
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${url}#webpage`,
+      url,
+      name: page.title,
+      description: page.description,
+      inLanguage: 'it-IT',
+      isPartOf: { '@id': `${root}#website` },
+      about: { '@id': businessId },
+      primaryImageOfPage: { '@type': 'ImageObject', url: ogUrl, width: 1200, height: 630 }
+    }
+  ]
+};
+---
+
+<title>{page.title}</title>
+<meta name="description" content={page.description} />
+<link rel="canonical" href={url} />
+<link rel="alternate" hreflang="it" href={url} />
+<link rel="alternate" hreflang="x-default" href={url} />
+<meta name="robots" content={indexable ? 'index, follow, max-image-preview:large' : 'noindex, nofollow'} />
+
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="it_IT" />
+<meta property="og:site_name" content={s.brand} />
+<meta property="og:title" content={page.title} />
+<meta property="og:description" content={page.description} />
+<meta property="og:url" content={url} />
+<meta property="og:image" content={ogUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={home.about.image.alt} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={page.title} />
+<meta name="twitter:description" content={page.description} />
+<meta name="twitter:image" content={ogUrl} />
+
+<meta name="geo.region" content={`${s.area.country}-${s.area.province}`} />
+{s.area.locality && <meta name="geo.placename" content={s.area.locality} />}
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

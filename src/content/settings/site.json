@@ -1,0 +1,24 @@
+{
+  "brand": "Carmen Log",
+  "tagline": "Wedding & Event Planner",
+  "founder": "Carmen",
+  "eventsCount": 300,
+  "whatsapp": {
+    "number": "",
+    "message": "Ciao Carmen! Vorrei qualche informazione per il mio evento."
+  },
+  "email": "",
+  "website": "https://giuseppefigliuolo.github.io/carmen-log-site/",
+  "instagram": "https://www.instagram.com/carmenlog_weddingeventplanner/",
+  "instagramHandle": "@carmenlog_weddingeventplanner",
+  "area": {
+    "locality": "",
+    "province": "PZ",
+    "region": "Basilicata",
+    "country": "IT"
+  },
+  "vatNumber": "",
+  "intro": {
+    "enabled": true
+  }
+}

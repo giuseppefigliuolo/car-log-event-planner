@@ -1,0 +1,33 @@
+---
+/** Band of services scrolling sideways; speeds up with scroll velocity. */
+import type { Home } from '../../lib/content';
+
+interface Props { home: Home }
+const { home } = Astro.props;
+// Odd counts would flip the italic pattern at the loop point: one "unit" is two passes.
+const unit = [...home.services, ...home.services].map((t, i) => ({ t, it: i % 2 === 1 }));
+---
+
+<section class="band" aria-label="Eventi che organizzo">
+  <ul class="sr-only">{home.services.map((t) => <li>{t}</li>)}</ul>
+  <div class="track" data-marquee aria-hidden="true">
+    {[unit, unit].map((set) => (
+      <div class="set">
+        {set.map((m) => <span class:list={['item', { it: m.it }]}>{m.t}<span class="dot"></span></span>)}
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .band { overflow: hidden; padding: clamp(28px, 4vw, 48px) 0; border-block: 1px solid var(--line); }
+  .track { display: flex; width: max-content; }
+  :global(.m) .track { will-change: transform; }
+  .set { display: flex; }
+  .item {
+    display: flex; align-items: center; gap: clamp(24px, 3vw, 48px); padding-right: clamp(24px, 3vw, 48px);
+    font: 400 clamp(40px, 7vw, 104px)/1 var(--display); letter-spacing: -0.025em; white-space: nowrap;
+  }
+  .it { font-style: italic; }
+  .dot { display: block; width: 0.16em; height: 0.16em; border-radius: 50%; background: var(--accent); }
+</style>

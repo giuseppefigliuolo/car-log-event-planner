@@ -1,0 +1,64 @@
+---
+/**
+ * First-visit intro ("Sequenza"): event photos wipe in one after another, each with its category,
+ * then the curtain lifts onto the hero. Rendered in HTML (so it paints with the page), only visible
+ * under `html.intro`. Photos have no src until the intro actually runs (intro.ts sets it from data-src):
+ * returning visitors never download them, and the clipped frames don't wait on lazy-loading heuristics.
+ */
+import { getImage } from 'astro:assets';
+import type { Home, Settings } from '../lib/content';
+import Brand from './ui/Brand.astro';
+
+interface Props { home: Home; settings: Settings }
+const { home, settings } = Astro.props;
+
+const frames = await Promise.all(
+  home.intro.frames.map(async (f) => ({
+    label: f.label,
+    img: await getImage({ src: f.image, width: 640, height: 853, fit: 'cover', format: 'webp', quality: 58 })
+  }))
+);
+---
+
+{settings.intro.enabled && (
+  <div class="intro" aria-hidden="true" data-intro-el>
+    <span class="label" data-intro-label>{frames[0].label}</span>
+    <div class="frame" data-intro-frame>
+      {frames.map((f) => (
+        <img
+          data-src={f.img.src} width={f.img.attributes.width} height={f.img.attributes.height}
+          alt="" decoding="async" data-intro-img data-label={f.label}
+        />
+      ))}
+    </div>
+    <div class="word display"><Brand name={settings.brand} attr="data-intro-w" /></div>
+  </div>
+)}
+
+<style>
+  .intro {
+    display: none;
+    position: fixed; inset: 0; z-index: 100;
+    flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+    background: var(--bg);
+  }
+  :global(html.intro) { overflow: hidden; }
+  /* Failsafe: if JS never runs, the overlay removes itself. */
+  :global(html.intro) .intro { display: flex; animation: intro-failsafe 0.4s 6.5s forwards; }
+  @keyframes intro-failsafe { to { opacity: 0; visibility: hidden; } }
+
+  .label {
+    font: 400 11px/1.4 var(--mono); letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); opacity: 0;
+  }
+  .frame { position: relative; width: min(58vw, 320px); aspect-ratio: 3 / 4; overflow: hidden; }
+  .frame img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    clip-path: inset(100% 0 0 0);
+  }
+  .word {
+    display: flex; gap: 0.22em;
+    font-size: clamp(36px, 7vw, 64px); line-height: 1; letter-spacing: -0.02em;
+  }
+  .word :global([data-intro-w]) { transform: translateY(110%); }
+</style>

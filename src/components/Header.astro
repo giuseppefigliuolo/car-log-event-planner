@@ -1,0 +1,103 @@
+---
+/**
+ * Fixed header (hides on scroll down, frosted once scrolled; always frosted on desktop) and the
+ * mobile menu ("Cerchio": a circle grows out of the burger, centred italic links).
+ * ≥900px: section links + WhatsApp in the header. <900px: burger.
+ */
+import type { Settings } from '../lib/content';
+import { areaLabel, whatsappHref } from '../lib/contact';
+import { sections } from '../lib/nav';
+
+/** `kicker`: the line above the menu links ("Event Planner"). */
+interface Props { settings: Settings; kicker: string }
+const { settings: s, kicker } = Astro.props;
+const wa = whatsappHref(s);
+---
+
+<header class="hdr" data-hdr>
+  <a href="#top" class="logo" aria-label={`${s.brand} — torna all'inizio`}>
+    <span class="logo-name">{s.brand}</span>
+    <span class="logo-sub">{s.tagline}</span>
+  </a>
+  <nav class="hdr-nav" aria-label="Sezioni">
+    {sections.slice(0, 3).map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
+    <a class="btn hdr-cta" href={wa} target="_blank" rel="noopener">Scrivimi su WhatsApp</a>
+  </nav>
+  <button class="burger" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
+    <span data-menu-label>Menu</span>
+    <span class="bars" aria-hidden="true"><span></span><span></span></span>
+  </button>
+</header>
+
+<div class="menu" id="menu" data-menu inert>
+  <span class="kicker">{kicker} · {areaLabel(s)}</span>
+  <nav class="menu-nav" aria-label="Menu principale">
+    {sections.map(([id, label], i) => (
+      <a href={`#${id}`} data-menu-link>
+        <span class="menu-label" style={`--md:${(0.3 + i * 0.07).toFixed(2)}s`}>{label}</span>
+      </a>
+    ))}
+  </nav>
+  <a class="btn" href={wa} target="_blank" rel="noopener">Scrivimi su WhatsApp <span aria-hidden="true">↗</span></a>
+</div>
+
+<style>
+  .hdr {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    padding: 14px var(--gutter);
+    transition: transform 0.7s var(--ease), background-color 0.4s, backdrop-filter 0.4s;
+  }
+  .hdr:global(.is-hidden) { transform: translateY(-110%); }
+  .hdr:global(.is-solid) {
+    background-color: rgba(248, 244, 239, 0.84);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+  .logo { display: flex; flex-direction: column; gap: 4px; line-height: 1; }
+  .logo-name { font: italic 500 24px/1 var(--display); letter-spacing: -0.01em; }
+  .logo-sub { font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); }
+  @media (hover: hover) { .logo:hover .logo-sub { color: var(--muted); } }
+
+  .hdr-nav {
+    display: none; align-items: center; gap: clamp(24px, 2.6vw, 40px);
+    font-size: 13px; letter-spacing: 0.03em;
+  }
+  .hdr-nav > a:not(.btn) { padding: 6px 0; }
+  .hdr-cta { padding: 11px 20px; font-size: 13px; letter-spacing: 0.03em; }
+
+  .burger {
+    display: flex; align-items: center; gap: 12px;
+    height: 44px; padding: 0 2px; background: none; border: 0; cursor: pointer;
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+  }
+  .bars { display: flex; flex-direction: column; gap: 6px; width: 26px; }
+  .bars span { display: block; height: 1px; background: var(--fg); transition: transform 0.6s var(--ease-io); }
+  :global(.menu-open) .bars span:first-child { transform: translateY(3.5px) rotate(45deg); }
+  :global(.menu-open) .bars span:last-child { transform: translateY(-3.5px) rotate(-45deg); }
+
+  .menu {
+    position: fixed; inset: 0; z-index: 55;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 44px;
+    padding: 100px 24px calc(40px + env(safe-area-inset-bottom));
+    background: var(--sand); text-align: center;
+    clip-path: circle(0% at calc(100% - 46px) 36px);
+    transition: clip-path 1.15s var(--ease-io);
+    pointer-events: none;
+  }
+  :global(.menu-open) .menu { clip-path: circle(150% at calc(100% - 46px) 36px); pointer-events: auto; }
+  .menu-nav { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .menu-nav a { display: block; overflow: hidden; padding: 0 0.1em; }
+  .menu-label {
+    display: block;
+    font: italic 400 clamp(48px, 14vw, 84px)/1.1 var(--display); letter-spacing: -0.025em;
+    transform: translateY(110%);
+    transition: transform 1.1s var(--ease) 0s;
+  }
+  :global(.menu-open) .menu-label { transform: none; transition-delay: var(--md); }
+
+  @media (min-width: 900px) {
+    .hdr-nav { display: flex; }
+    .burger, .menu { display: none; }
+  }
+</style>

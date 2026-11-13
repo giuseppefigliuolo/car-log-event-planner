@@ -1,0 +1,77 @@
+---
+/**
+ * Storie ("Stack"): each story is a full-height card that sticks and gets covered by the next one;
+ * the covered card shrinks and dims (scroll-fx stack(): scale + [data-dim] opacity). Sticky stacking works without JS too.
+ */
+import type { Home } from '../../lib/content';
+import { rich } from '../../lib/rich';
+import Img from '../ui/Img.astro';
+
+interface Props { home: Home }
+const { home } = Astro.props;
+const st = home.stories;
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<section id="storie" class="stories" aria-labelledby="stories-t">
+  <div class="wrap">
+    <header class="head">
+      <span class="kicker" data-r>{st.kicker}</span>
+      <h2 id="stories-t" class="display" data-rm><span class="mask"><span data-rl set:html={rich(st.title)} /></span></h2>
+    </header>
+    <ol class="stack">
+      {st.items.map((s, i) => (
+        <li class="slot" data-sc style={`--top: calc(12svh + ${i * 16}px)`}>
+          <article class="card" data-cursor="Guarda">
+            <Img src={s.image.src} alt={s.image.alt} class="cover" sizes="(min-width: 1376px) 1280px, calc(100vw - 2 * clamp(20px, 4vw, 48px))" widths={[480, 768, 1080, 1400]} />
+            <div class="grad" aria-hidden="true"></div>
+            <div class="top"><span>{pad(i + 1)} / {pad(st.items.length)}</span><span>{s.place ? `${s.type} · ${s.place}` : s.type}</span></div>
+            <div class="bottom">
+              <h3 class="display">{s.title}</h3>
+              <p>{s.text}</p>
+            </div>
+            <div class="dim" data-dim aria-hidden="true"></div>
+          </article>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .stories { padding: var(--sp-section) var(--gutter); }
+  .wrap { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(44px, 6vw, 80px); }
+  .head { display: flex; flex-direction: column; gap: 14px; }
+  h2 { font-size: clamp(44px, 8vw, 124px); line-height: 0.95; }
+  .stack { display: flex; flex-direction: column; gap: 8vh; }
+  .slot { position: sticky; top: var(--top); height: min(76svh, 820px); }
+  .card {
+    position: relative; height: 100%; overflow: hidden;
+    background: var(--fg); color: var(--cream);
+    transform-origin: 50% 0%;
+  }
+  .grad {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(to top, rgba(30, 22, 21, 0.82) 0%, rgba(30, 22, 21, 0.55) 30%, rgba(30, 22, 21, 0.15) 55%, rgba(30, 22, 21, 0) 70%),
+      linear-gradient(to bottom, rgba(30, 22, 21, 0.45) 0%, rgba(30, 22, 21, 0) 18%);
+  }
+  .top {
+    position: absolute; left: 0; right: 0; top: 0;
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: clamp(16px, 2.4vw, 30px);
+    font: 400 11px/1.4 var(--mono);
+  }
+  .bottom {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 40px;
+    padding: clamp(18px, 3vw, 36px);
+  }
+  h3 {
+    font-size: clamp(40px, 7vw, 112px); line-height: 0.95; letter-spacing: -0.035em;
+    text-shadow: 0 2px 24px rgba(30, 22, 21, 0.35);
+  }
+  .bottom p { max-width: 340px; font-size: 15px; line-height: 1.55; }
+  /* Darkens a card while the next one covers it (cheaper than filter: brightness()). */
+  .dim { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
+</style>
