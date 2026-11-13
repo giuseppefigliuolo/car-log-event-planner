@@ -71,7 +71,7 @@ public/admin/              ← Decap CMS (config.yml)
   `clip-path` are animated (the story stack dims with an overlay's opacity, not `filter`).
 - Hero photo (desktop) and the first two deck cards (mobile) load with `fetchpriority=high`, each only at its
   own breakpoint; everything else lazy with explicit sizes (no CLS).
-- Intro plays once per session (~3.9 s, the design's timing) over the already-rendered hero; its photos
+- Intro plays on the first visit only (~3.9 s, the design's timing; `localStorage` `cl-intro-seen`, written when it ends; in dev `?introreset=1` brings it back) over the already-rendered hero; its photos
   are fetched only when it plays.
 - Fonts self-hosted by Astro (Bodoni Moda with its optical-size axis, Work Sans, IBM Plex Mono),
   subset, with metric-matched fallbacks.

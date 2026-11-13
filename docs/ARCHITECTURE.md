@@ -24,7 +24,8 @@ the brief is the reference for those.
 
 ```
 <head> inline script ─ prefers-reduced-motion? ── no ──→ html.m
-                       first visit this session? ─ yes ─→ html.intro   (overlay visible from first paint)
+                       first visit ever (no localStorage `cl-intro-seen`)? ─ yes ─→ html.intro   (overlay visible from first paint)
+                       seen / reduced motion ─→ data-intro="skip" (overlay never painted)
 main.ts
   always:  initSmooth (Lenis only with .m) → initFit → initMenu → initChrome → initDeck
   .m only: runIntro() ─ hero promise → heroIn(delay)      (adds .is-in on [data-hero], --hd = delay)
@@ -36,7 +37,7 @@ main.ts
 
 Intro timeline (`features/intro.ts`, the design's numbers): photo *i* wipes in at `200 + i·320 ms`
 (700 ms, alternating ±2° tilt), the label switches with it; at `200 + n·320 + 500 ms` the curtain lifts
-(1150 ms) and the hero entrance starts 250 ms later. A guard releases the page after 6 s whatever happens,
+(1150 ms) and the hero entrance starts 250 ms later. `cl-intro-seen` is written when the intro ends (not when it starts), so leaving halfway shows it again; dev only: `?introreset=1` clears it. A guard releases the page after 6 s whatever happens,
 and a CSS animation hides the overlay at 6.5 s if JS never ran.
 
 ## 3. The `data-*` contract

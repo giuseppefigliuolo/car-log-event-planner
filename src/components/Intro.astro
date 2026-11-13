@@ -2,7 +2,7 @@
 /**
  * First-visit intro ("Sequenza"): event photos wipe in one after another, each with its category,
  * then the curtain lifts onto the hero. Rendered in HTML (so it paints with the page), only visible
- * under `html.intro`. Photos have no src until the intro actually runs: returning visitors never download
+ * under `html.intro` (set in <head> for first visits only, see Base.astro). Photos have no src until the intro actually runs: returning visitors never download
  * them, and the clipped frames don't wait on lazy-loading heuristics. The inline script right after the markup
  * starts the downloads at parse time (the first photo is the LCP): waiting for the bundle at the end of <body>
  * would put the whole JS download in front of them.
@@ -53,6 +53,8 @@ const frames = await Promise.all(
     background: var(--bg);
   }
   :global(html.intro) { overflow: hidden; }
+  /* Returning visitor (or reduced motion): never painted. */
+  :global(html[data-intro="skip"]) .intro { display: none !important; }
   /* Failsafe: if JS never runs, the overlay removes itself. */
   :global(html.intro) .intro { display: flex; animation: intro-failsafe 0.4s 6.5s forwards; }
   @keyframes intro-failsafe { to { opacity: 0; visibility: hidden; } }

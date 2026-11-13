@@ -28,18 +28,24 @@ const intro = withIntro && settings.intro.enabled;
     <meta name="theme-color" content="#f8f4ef" />
     <meta name="format-detection" content="telephone=no" />
     <!-- Decides motion + intro before first paint: no flash, no layout shift. -->
-    <script is:inline>
+    {/* Intro: first visit only. `cl-intro-seen` is written when the intro ENDS (features/intro.ts), so closing
+         the tab halfway means seeing it again. Seen / reduced motion → data-intro="skip" (the overlay stays hidden);
+         storage blocked → treated as a first visit. In dev, ?introreset=1 forgets the visit. */}
+    <script is:inline define:vars={{ dev: import.meta.env.DEV }}>
       (function () {
         var d = document.documentElement;
-        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        d.classList.add('m');
         try {
-          if (d.dataset.intro === '1' && !sessionStorage.getItem('cl-intro')) {
-            d.classList.add('intro');
-            // Failsafe if the script never loads: release the page.
-            setTimeout(function () { d.classList.remove('intro'); }, 7000);
-          }
+          if (dev && /[?&]introreset=1(&|$)/.test(location.search)) localStorage.removeItem('cl-intro-seen');
         } catch (e) {}
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) { d.dataset.intro = 'skip'; return; }
+        d.classList.add('m');
+        if (d.dataset.intro !== '1') return;
+        var seen = false;
+        try { seen = localStorage.getItem('cl-intro-seen') === '1'; } catch (e) {}
+        if (seen) { d.dataset.intro = 'skip'; return; }
+        d.classList.add('intro');
+        // Failsafe if the script never loads: release the page.
+        setTimeout(function () { d.classList.remove('intro'); }, 7000);
       })();
     </script>
     <Font cssVariable="--font-display" preload={[{ weight: 400, style: 'normal' }, { weight: 400, style: 'italic' }]} />
