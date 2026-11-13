@@ -16,7 +16,20 @@ const ig = home.instagram;
         <span class="kicker" data-r>{ig.kicker}</span>
         <h2 id="ig-t" class="display" data-rm><Lines lines={ig.title} /></h2>
       </div>
-      <a class="btn btn-line sm" data-r href={s.instagram} target="_blank" rel="noopener">{s.instagramHandle} <span aria-hidden="true">↗</span></a>
+      <div class="profile" data-r>
+        <a class="who" href={s.instagram} target="_blank" rel="noopener">
+          <span class="ring" aria-hidden="true">
+            <span class="photo media">
+              <Img src={s.instagramAvatar} alt="" class="cover" sizes="64px" widths={[64, 128, 192]} />
+            </span>
+          </span>
+          <span class="meta">
+            <span class="handle">{s.instagramHandle}</span>
+            <span class="mono sub">{s.instagramPostsLabel} · {s.area.region}</span>
+          </span>
+        </a>
+        <a class="btn btn-line follow" href={s.instagram} target="_blank" rel="noopener">Seguimi su Instagram <span aria-hidden="true">↗</span></a>
+      </div>
     </div>
     <ul class="grid">
       {ig.feed.slice(0, 12).map((g) => (
@@ -33,9 +46,21 @@ const ig = home.instagram;
 <style>
   .ig { padding: var(--sp-section) var(--gutter); }
   .wrap { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(36px, 5vw, 64px); }
-  .head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  .head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 28px 48px; }
   .title { display: flex; flex-direction: column; gap: 14px; }
   h2 { font-size: clamp(44px, 7.4vw, 116px); line-height: 0.95; }
+  .profile { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; min-width: min(100%, 300px); }
+  .who { display: flex; align-items: center; gap: 14px; max-width: 100%; }
+  .ring {
+    flex: none; width: 64px; height: 64px; padding: 2.5px; border-radius: 50%;
+    background: conic-gradient(from 210deg, #e3b2b8, #a45e68, #c9b8a6, #e3b2b8);
+  }
+  .photo { display: block; width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--sand); background: var(--tile); }
+  .photo :global(img) { object-position: 35% 30%; }
+  .meta { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .handle { font-size: 14px; letter-spacing: 0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sub { color: var(--muted); }
+  .follow { padding: 14px 24px; }
   .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(4px, 0.6vw, 10px); }
   .grid li:nth-child(n + 10) { display: none; }
   .tile { display: block; aspect-ratio: 1 / 1; }

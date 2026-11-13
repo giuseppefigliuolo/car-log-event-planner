@@ -157,6 +157,10 @@ collections:
           - { label: Sito web, name: website, widget: string }
           - { label: Instagram (URL), name: instagram, widget: string }
           - { label: Instagram (handle), name: instagramHandle, widget: string }
+          # TODO: verificare il numero di post sul profilo reale (900+ è provvisorio).
+          - { label: 'Instagram (numero di post, es. 900+ post)', name: instagramPostsLabel, widget: string }
+          # Foto quadrata: viene mostrata in un cerchio da 64px.
+          - { label: Instagram (foto profilo), name: instagramAvatar, widget: image }
           - label: Zona
             name: area
             widget: object

@@ -91,7 +91,7 @@ const pages = defineCollection({
 
 const settings = defineCollection({
   loader: glob({ pattern: '*.json', base: './src/content/settings' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     brand: z.string(),
     tagline: z.string(),
     founder: z.string(),
@@ -105,6 +105,11 @@ const settings = defineCollection({
     website: z.url(),
     instagram: z.url(),
     instagramHandle: z.string(),
+    // Profile-block label under the handle.
+    // TODO: check the post count on the real profile (900+ is a placeholder).
+    instagramPostsLabel: z.string(),
+    // Avatar in the Instagram section (square photo, shown in a 64px circle).
+    instagramAvatar: image(),
     area: z.object({
       locality: z.string().optional().default(''),
       province: z.string(),
