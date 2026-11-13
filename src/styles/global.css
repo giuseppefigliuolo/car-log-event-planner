@@ -23,7 +23,7 @@
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-io: cubic-bezier(0.76, 0, 0.24, 1);
   --gutter: clamp(20px, 4vw, 48px);
-  --sp-section: clamp(100px, 12vw, 170px);
+  --sp-section: clamp(56px, 12vw, 170px);
   --display: var(--font-display), 'Times New Roman', serif;
   --body: var(--font-body), 'Helvetica Neue', Arial, sans-serif;
   --mono: var(--font-mono), Menlo, monospace;

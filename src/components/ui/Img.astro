@@ -3,6 +3,8 @@
  * Responsive image: AVIF + WebP sources, lazy by default, explicit dimensions
  * (no layout shift). Extra attributes (data-*, class) land on the <img>.
  * `art` adds art direction: a different photo for `art.media` (Astro's <Picture> has no media sources).
+ * `skip` is a media query where the image isn't shown (e.g. the other breakpoint's layout): there the browser
+ * picks a 1×1 inline placeholder and downloads nothing, even for an eager `priority` image.
  */
 import { Picture, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
@@ -18,11 +20,12 @@ interface Props {
   class?: string;
   quality?: number;
   art?: Art;
+  skip?: string;
   [key: `data-${string}`]: unknown;
   style?: string;
 }
 
-const { src, alt, sizes, widths, priority = false, class: cls, quality = 68, art, ...rest } = Astro.props;
+const { src, alt, sizes, widths, priority = false, class: cls, quality = 68, art, skip, ...rest } = Astro.props;
 
 const fit = (img: ImageMetadata, ws?: number[]) => {
   const list = (ws ?? [480, 768, 1080, 1440, 1920]).filter((w) => w <= img.width);
@@ -33,17 +36,20 @@ const fit = (img: ImageMetadata, ws?: number[]) => {
 const list = fit(src, widths);
 
 const formats = ['avif', 'webp'] as const;
-const sources = art && [
-  ...(await Promise.all(formats.map(async (format) => ({
-    media: art.media, sizes: art.sizes, type: `image/${format}`,
-    srcset: (await getImage({ src: art.src, widths: fit(art.src, art.widths), format, quality })).srcSet.attribute
-  })))),
-  ...(await Promise.all(formats.map(async (format) => ({
-    media: undefined, sizes, type: `image/${format}`,
-    srcset: (await getImage({ src, widths: list, format, quality })).srcSet.attribute
-  }))))
+const encode = (img: ImageMetadata, ws: number[], media: string | undefined, sz: string) =>
+  Promise.all(formats.map(async (format) => ({
+    media, sizes: sz, type: `image/${format}`,
+    srcset: (await getImage({ src: img, widths: ws, format, quality })).srcSet.attribute
+  })));
+// 1×1 transparent GIF: matched first where `skip` applies.
+const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+const custom = !!(art || skip);
+const sources = custom && [
+  ...(skip ? [{ media: skip, sizes: undefined, type: undefined, srcset: BLANK }] : []),
+  ...(art ? await encode(art.src, fit(art.src, art.widths), art.media, art.sizes) : []),
+  ...(await encode(src, list, undefined, sizes))
 ];
-const fallback = art && (await getImage({ src, width: list[list.length - 1], format: 'jpg', quality }));
+const fallback = custom && (await getImage({ src, width: list[list.length - 1], format: 'jpg', quality }));
 const loading = priority ? 'eager' : 'lazy';
 const decoding = priority ? 'sync' : 'async';
 const fetchpriority = priority ? 'high' : 'auto';

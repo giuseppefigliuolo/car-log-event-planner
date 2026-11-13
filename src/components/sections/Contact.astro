@@ -11,8 +11,8 @@ import Img from '../ui/Img.astro';
 interface Props { home: Home; settings: Settings }
 const { home, settings: s } = Astro.props;
 const c = home.contact;
-// Each column's photos run twice: on tall/narrow screens one pass doesn't reach the bottom of the section
-// (same files, so no extra download). The section clips the rest.
+// On phones each column's photos run twice: one pass of 4 is ~650px and doesn't reach the bottom of the
+// section (same files, so no extra download). From 900px up one pass fills it and the repeat is hidden.
 const COLS = [
   { speed: '0.22', offset: '-30%' },
   { speed: '-0.16', offset: '-12%' },
@@ -42,7 +42,7 @@ const COLS = [
 </section>
 
 <style>
-  .contact { position: relative; height: clamp(700px, 125vh, 1150px); overflow: hidden; }
+  .contact { position: relative; height: 108svh; overflow: hidden; }
   .cols {
     position: absolute; inset: 0;
     display: flex; gap: clamp(8px, 1.2vw, 18px); padding: 0 clamp(8px, 1.2vw, 18px);
@@ -60,4 +60,8 @@ const COLS = [
   h2 { font-size: clamp(42px, 6vw, 80px); line-height: 0.98; letter-spacing: -0.035em; }
   p { max-width: 360px; color: var(--fg-2); text-wrap: pretty; }
   .cta { padding: 17px 30px; }
+  @media (min-width: 900px) {
+    .contact { height: clamp(700px, 125vh, 1150px); }
+    .tile:nth-child(n + 5) { display: none; }
+  }
 </style>

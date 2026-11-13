@@ -57,10 +57,20 @@ collections:
               - { label: Riga in alto a destra (desktop), name: meta, widget: string }
               - { label: Frase, name: lead, widget: string }
               - { label: Seconda frase (solo desktop), name: leadDesktop, widget: string }
-              - { label: Testo pulsante WhatsApp, name: cta, widget: string }
-              - { label: Testo pulsante WhatsApp (mobile), name: ctaShort, widget: string }
-              - { label: Invito a scorrere, name: scroll, widget: string }
-              - { label: Foto (verticale), name: image, widget: object, collapsed: true, fields: [{ label: Immagine, name: src, widget: image }, { label: Testo alternativo (SEO/accessibilità), name: alt, widget: string }] }
+              - { label: Frase sotto il nome (solo mobile), name: leadMobile, widget: string }
+              - { label: Testo pulsante WhatsApp (mobile), name: cta, widget: string }
+              - { label: Invito a scorrere (solo desktop), name: scroll, widget: string }
+              - { label: Foto (verticale, solo desktop), name: image, widget: object, collapsed: true, fields: [{ label: Immagine, name: src, widget: image }, { label: Testo alternativo (SEO/accessibilità), name: alt, widget: string }] }
+              - label: Mazzo di foto (solo mobile, 5–12)
+                name: deck
+                widget: list
+                min: 5
+                max: 12
+                summary: '{{fields.title}}'
+                hint: "Cosa organizzi, nell'ordine in cui si sfogliano. Non usare le foto delle Storie."
+                fields:
+                  - { label: Titolo, name: title, widget: string }
+                  - { label: Foto, name: image, widget: object, collapsed: true, fields: [{ label: Immagine, name: src, widget: image }, { label: Testo alternativo (SEO/accessibilità), name: alt, widget: string }] }
           - { label: Eventi (fascia scorrevole), name: services, widget: list, field: { label: Evento, name: service, widget: string } }
           - label: Il mio lavoro
             name: manifesto
